@@ -22,6 +22,7 @@ public class ExampleSubsystem extends SubsystemBase {
     return runOnce(
         () -> {
           /* one-time action goes here */
+          System.out.println("HELLO");
         });
   }
 
