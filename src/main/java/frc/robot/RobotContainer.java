@@ -12,6 +12,7 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Shoulder;
 
 import java.util.List;
 
@@ -45,6 +46,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final Shoulder m_shoulder = new Shoulder();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -88,11 +90,8 @@ public class RobotContainer {
 
     m_driverController.y().onTrue(new InstantCommand(m_robotDrive::zeroHeading, m_robotDrive));
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-
-
+    m_driverController.x().whileTrue(new InstantCommand(m_shoulder::up)).onFalse(getAutonomousCommand()).onFalse(new InstantCommand(m_shoulder::stop));
+    m_driverController.a().whileTrue(new InstantCommand(m_shoulder::down)).onFalse(getAutonomousCommand()).onFalse(new InstantCommand(m_shoulder::stop));
   }
 
   public Command getAutonomousCommand() {
