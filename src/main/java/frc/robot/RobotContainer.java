@@ -63,9 +63,10 @@ public class RobotContainer {
       // Turning is controlled by the X axis of the right stick.
       new RunCommand(
           () -> m_robotDrive.drive(
-              MathUtil.applyDeadband(-m_driverController.getLeftY(), 0.06),
-              MathUtil.applyDeadband(-m_driverController.getLeftX(), 0.06),
-              MathUtil.applyDeadband(-m_driverController.getRightX(), 0.06),
+              -MathUtil.applyDeadband(m_driverController.getLeftY(), Constants.OIConstants.kDriveDeadband),
+              -MathUtil.applyDeadband(m_driverController.getLeftX(), Constants.OIConstants.kDriveDeadband),
+              -MathUtil.applyDeadband(m_driverController.getRightX(), Constants.OIConstants.kDriveDeadband),
+              true,
               true),
           m_robotDrive));
   }
@@ -132,6 +133,6 @@ public class RobotContainer {
     m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
+    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
   }
 }
