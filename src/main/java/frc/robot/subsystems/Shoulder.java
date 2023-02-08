@@ -6,9 +6,12 @@ package frc.robot.subsystems;
 
 import com.fasterxml.jackson.databind.ser.std.CalendarSerializer;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShoulderConstants;
 
@@ -17,38 +20,33 @@ public class Shoulder extends SubsystemBase {
   CANSparkMax rightMotor;
 
   private final double SPEED = 0.5;
+  private SparkMaxAbsoluteEncoder absoluteEncoder;
 
   /** Creates a new Shoulder. */
   public Shoulder() {
     leftMotor = new CANSparkMax(ShoulderConstants.leftCanId, MotorType.kBrushless);
     rightMotor = new CANSparkMax(ShoulderConstants.rightCanId, MotorType.kBrushless);
 
-    // TODO - verify
     leftMotor.setIdleMode(IdleMode.kBrake);
-    // TODO - make break mode after testing just left side
-    rightMotor.setIdleMode(IdleMode.kCoast);
+    absoluteEncoder = leftMotor.getAbsoluteEncoder(Type.kDutyCycle);
 
-    // TODO - verify
     rightMotor.setInverted(true);
+    rightMotor.follow(leftMotor);
+    
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Shoulder Encoder", absoluteEncoder.getPosition());
   }
 
   public void up() {
     leftMotor.set(SPEED);
-
-    // TODO - enable
-    //rightMotor.set(SPEED);
   }
 
   public void down() {
     leftMotor.set(-SPEED);
-       
-    // TODO - enable
-    //rightMotor.set(-SPEED);
   }
 
   public void stop() {
