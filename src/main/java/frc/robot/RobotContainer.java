@@ -9,6 +9,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -47,6 +48,7 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final Shoulder m_shoulder = new Shoulder();
+  private final Arm m_arm = new Arm();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -88,10 +90,16 @@ public class RobotContainer {
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
 
-    m_driverController.y().onTrue(new InstantCommand(m_robotDrive::zeroHeading, m_robotDrive));
+    // TODO - using y below
+    //m_driverController.y().onTrue(new InstantCommand(m_robotDrive::zeroHeading, m_robotDrive));
 
-    m_driverController.x().whileTrue(new InstantCommand(m_shoulder::up)).onFalse(getAutonomousCommand()).onFalse(new InstantCommand(m_shoulder::stop));
-    m_driverController.a().whileTrue(new InstantCommand(m_shoulder::down)).onFalse(getAutonomousCommand()).onFalse(new InstantCommand(m_shoulder::stop));
+    // shoulder
+    m_driverController.x().whileTrue(new InstantCommand(m_shoulder::up)).onFalse(new InstantCommand(m_shoulder::stop));
+    m_driverController.a().whileTrue(new InstantCommand(m_shoulder::down)).onFalse(new InstantCommand(m_shoulder::stop));
+
+    // arm
+    m_driverController.y().whileTrue(new InstantCommand(m_arm::out)).onFalse(new InstantCommand(m_arm::stop));
+    m_driverController.b().whileTrue(new InstantCommand(m_arm::in)).onFalse(new InstantCommand(m_arm::stop));
   }
 
   public Command getAutonomousCommand() {

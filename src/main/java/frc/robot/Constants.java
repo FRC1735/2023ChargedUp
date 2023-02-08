@@ -24,6 +24,10 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static final class ArmConstants {
+    public static final int canId = 7;
+  }
+
   public static final class ShoulderConstants {
     public static final int leftCanId = 8;
     public static final int rightCanId = 9;
