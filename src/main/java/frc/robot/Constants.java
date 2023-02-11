@@ -24,6 +24,13 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+  // CAN IDs that have been assigned/labeled to controllers who's purpose is not yet known
+  private static final class Unassigned {
+    public static final int canFive = 5;
+    public static final int canSix = 6;
+  }
+
   public static final class ArmConstants {
     public static final int canId = 7;
   }
