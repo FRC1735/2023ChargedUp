@@ -5,7 +5,9 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
+import com.revrobotics.SparkMaxAlternateEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
@@ -17,21 +19,27 @@ public class Arm extends SubsystemBase {
   CANSparkMax motor;
 
   double SPEED = 1;
-  private SparkMaxAbsoluteEncoder absoluteEncoder;
+
+  private RelativeEncoder alternateEncoder;
 
 
   /** Creates a new Arm. */
   public Arm() {
     this.motor = new CANSparkMax(ArmConstants.canId, MotorType.kBrushless);
-    absoluteEncoder = this.motor.getAbsoluteEncoder(Type.kDutyCycle);
+    //absoluteEncoder = this.motor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle, );
 
+    alternateEncoder = this.motor.getAlternateEncoder(SparkMaxAlternateEncoder.Type.kQuadrature, 8192);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Arm Encoder", absoluteEncoder.getPosition());
-
+    //SmartDashboard.putNumber("Arm Encoder", absoluteEncoder.getPosition());
+    
+    SmartDashboard.putNumber("Applied Output", motor.getAppliedOutput());
+    
+    SmartDashboard.putNumber("Alt Encoder Velocity", alternateEncoder.getVelocity());
+    SmartDashboard.putNumber("Alt encoder position", alternateEncoder.getPosition());
   }
 
   public void in() {
