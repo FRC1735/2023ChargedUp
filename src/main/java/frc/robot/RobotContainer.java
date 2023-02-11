@@ -90,8 +90,7 @@ public class RobotContainer {
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
 
-    // TODO - using y below
-    //m_driverController.y().onTrue(new InstantCommand(m_robotDrive::zeroHeading, m_robotDrive));
+    m_driverController.rightBumper().onTrue(new InstantCommand(m_robotDrive::zeroHeading, m_robotDrive));
 
     // shoulder
     m_driverController.x().whileTrue(new InstantCommand(m_shoulder::up)).onFalse(new InstantCommand(m_shoulder::stop));
