@@ -14,6 +14,7 @@ import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Shoulder;
+import frc.robot.subsystems.Wrist;
 
 import java.util.List;
 
@@ -49,6 +50,7 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final Shoulder m_shoulder = new Shoulder();
   private final Arm m_arm = new Arm();
+  private final Wrist m_wrist = new Wrist();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =

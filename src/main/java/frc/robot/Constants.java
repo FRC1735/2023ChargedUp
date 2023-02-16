@@ -27,13 +27,16 @@ public final class Constants {
 
   // CAN IDs that have been assigned/labeled to controllers who's purpose is not yet known
   private static final class Unassigned {
-    public static final int canFive = 5;
     public static final int canSix = 6;
     public static final int canEighteen = 18;
     public static final int canNineteen = 19;
     public static final int canTwenty = 20;
     public static final int canTwentyOne = 21;
     public static final int canTwentyTwo = 22;
+  }
+
+  public static final class WristConstants {
+    public static final int canId = 5;
   }
 
   public static final class ArmConstants {
