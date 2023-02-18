@@ -12,6 +12,7 @@ import frc.robot.Constants;
 
 public class Wrist extends SubsystemBase {
   private CANSparkMax motor;
+  private final double SPEED = 0.5;
 
   /** Creates a new Wrist. */
   public Wrist() {
@@ -21,5 +22,17 @@ public class Wrist extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public void up() {
+    motor.set(SPEED);
+  }
+
+  public void down() {
+    motor.set(-SPEED);
+  }
+
+  public void stop() {
+    motor.stopMotor();
   }
 }

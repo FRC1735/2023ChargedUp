@@ -12,6 +12,7 @@ import frc.robot.Constants;
 
 public class Claw extends SubsystemBase {
   CANSparkMax motor;
+  private final double SPEED = 0.5;
 
   /** Creates a new Claw. */
   public Claw() {
@@ -21,5 +22,17 @@ public class Claw extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public void open() {
+    motor.set(SPEED);
+  }
+
+  public void close() {
+    motor.set(-SPEED);
+  }
+
+  public void stop() {
+    motor.stopMotor();
   }
 }
