@@ -57,6 +57,10 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_controllerA =
       new CommandXboxController(OIConstants.kDriverControllerPort);
+  
+  private final CommandXboxController m_controllerB = 
+      new CommandXboxController(1); // TODO - use constant
+
   private final ColorSensor m_colorSensor = new ColorSensor();
 
   private double speedModifier = 1.0;
@@ -112,6 +116,13 @@ public class RobotContainer {
 
     // second controller
 
+    // wrist
+    m_controllerB.x().whileTrue(new InstantCommand(m_wrist::up)).onFalse(new InstantCommand(m_wrist::stop));
+    m_controllerB.y().whileTrue(new InstantCommand(m_wrist::down)).onFalse(new InstantCommand(m_wrist::stop));
+
+    // claw
+    m_controllerB.x().whileTrue(new InstantCommand(m_claw::close)).onFalse(new InstantCommand(m_claw::stop));
+    m_controllerB.y().whileTrue(new InstantCommand(m_claw::open)).onFalse(new InstantCommand(m_claw::stop));
   }
 
   public Command getAutonomousCommand() {
