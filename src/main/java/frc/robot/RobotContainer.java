@@ -55,7 +55,7 @@ public class RobotContainer {
   private final Claw m_claw = new Claw();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
+  private final CommandXboxController m_controllerA =
       new CommandXboxController(OIConstants.kDriverControllerPort);
   private final ColorSensor m_colorSensor = new ColorSensor();
 
@@ -75,9 +75,9 @@ public class RobotContainer {
       // Turning is controlled by the X axis of the right stick.
       new RunCommand(
           () -> m_robotDrive.drive(
-              -MathUtil.applyDeadband(m_driverController.getLeftY() * speedModifier, Constants.OIConstants.kDriveDeadband),
-              -MathUtil.applyDeadband(m_driverController.getLeftX() * speedModifier, Constants.OIConstants.kDriveDeadband),
-              -MathUtil.applyDeadband(m_driverController.getRightX() * speedModifier, Constants.OIConstants.kDriveDeadband),
+              -MathUtil.applyDeadband(m_controllerA.getLeftY() * speedModifier, Constants.OIConstants.kDriveDeadband),
+              -MathUtil.applyDeadband(m_controllerA.getLeftX() * speedModifier, Constants.OIConstants.kDriveDeadband),
+              -MathUtil.applyDeadband(m_controllerA.getRightX() * speedModifier, Constants.OIConstants.kDriveDeadband),
               true,
               true),
           m_robotDrive));
@@ -98,16 +98,20 @@ public class RobotContainer {
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
 
-    m_driverController.rightBumper().onTrue(new InstantCommand(m_robotDrive::zeroHeading, m_robotDrive));
-    m_driverController.leftBumper().onTrue(new InstantCommand( () -> speedModifier = HALF_SPEED)).onFalse(new InstantCommand(() -> speedModifier = FULL_SPEED));
+    // first controller
+    m_controllerA.rightBumper().onTrue(new InstantCommand(m_robotDrive::zeroHeading, m_robotDrive));
+    m_controllerA.leftBumper().onTrue(new InstantCommand( () -> speedModifier = HALF_SPEED)).onFalse(new InstantCommand(() -> speedModifier = FULL_SPEED));
 
     // shoulder
-    m_driverController.x().whileTrue(new InstantCommand(m_shoulder::up)).onFalse(new InstantCommand(m_shoulder::stop));
-    m_driverController.a().whileTrue(new InstantCommand(m_shoulder::down)).onFalse(new InstantCommand(m_shoulder::stop));
+    m_controllerA.x().whileTrue(new InstantCommand(m_shoulder::up)).onFalse(new InstantCommand(m_shoulder::stop));
+    m_controllerA.a().whileTrue(new InstantCommand(m_shoulder::down)).onFalse(new InstantCommand(m_shoulder::stop));
 
     // arm
-    m_driverController.y().whileTrue(new InstantCommand(m_arm::out)).onFalse(new InstantCommand(m_arm::stop));
-    m_driverController.b().whileTrue(new InstantCommand(m_arm::in)).onFalse(new InstantCommand(m_arm::stop));
+    m_controllerA.y().whileTrue(new InstantCommand(m_arm::out)).onFalse(new InstantCommand(m_arm::stop));
+    m_controllerA.b().whileTrue(new InstantCommand(m_arm::in)).onFalse(new InstantCommand(m_arm::stop));
+
+    // second controller
+
   }
 
   public Command getAutonomousCommand() {
