@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -12,11 +13,12 @@ import frc.robot.Constants;
 
 public class Claw extends SubsystemBase {
   CANSparkMax motor;
-  private final double SPEED = 0.5;
+  private final double SPEED = 0.25;
 
   /** Creates a new Claw. */
   public Claw() {
     this.motor = new CANSparkMax(Constants.ClawConstants.canId, MotorType.kBrushless);
+    this.motor.setIdleMode(IdleMode.kBrake);
   }
 
   @Override
