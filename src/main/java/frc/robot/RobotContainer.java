@@ -110,6 +110,10 @@ public class RobotContainer {
     m_controllerA.x().whileTrue(new InstantCommand(m_shoulder::up)).onFalse(new InstantCommand(m_shoulder::stop));
     m_controllerA.a().whileTrue(new InstantCommand(m_shoulder::down)).onFalse(new InstantCommand(m_shoulder::stop));
 
+    m_controllerA.b().whileTrue(new InstantCommand(m_shoulder::setPosition));
+
+
+    /*
     // arm
     m_controllerA.y().whileTrue(new InstantCommand(m_arm::out)).onFalse(new InstantCommand(m_arm::stop));
     m_controllerA.b().whileTrue(new InstantCommand(m_arm::in)).onFalse(new InstantCommand(m_arm::stop));
@@ -123,7 +127,10 @@ public class RobotContainer {
     // claw
     m_controllerB.x().whileTrue(new InstantCommand(m_claw::close)).onFalse(new InstantCommand(m_claw::stop));
     m_controllerB.a().whileTrue(new InstantCommand(m_claw::open)).onFalse(new InstantCommand(m_claw::stop));
-  }
+    */
+
+
+    }
 
   public Command getAutonomousCommand() {
     // Create config for trajectory
