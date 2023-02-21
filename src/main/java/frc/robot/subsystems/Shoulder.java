@@ -37,7 +37,7 @@ public class Shoulder extends SubsystemBase {
     pidController = leftMotor.getPIDController();
     pidController.setFeedbackDevice(absoluteEncoder);
 
-    pidController.setP(0.6);
+    pidController.setP(6);
     pidController.setI(0);
     pidController.setD(0);
     pidController.setFF(0);
@@ -74,6 +74,6 @@ public class Shoulder extends SubsystemBase {
   }
 
   public void setPosition() {
-    pidController.setReference(0.5, CANSparkMax.ControlType.kPosition);
+    pidController.setReference(0.3, CANSparkMax.ControlType.kPosition);
   }
 }
