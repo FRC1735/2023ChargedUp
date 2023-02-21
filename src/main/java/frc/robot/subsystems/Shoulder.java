@@ -13,6 +13,7 @@ import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.ShoulderConstants;
 
 public class Shoulder extends SubsystemBase {
@@ -29,9 +30,15 @@ public class Shoulder extends SubsystemBase {
 
     leftMotor.setIdleMode(IdleMode.kBrake);
     absoluteEncoder = leftMotor.getAbsoluteEncoder(Type.kDutyCycle);
+    //absoluteEncoder.setPositionConversionFactor(ModuleConstants.kTurningEncoderPositionFactor);
+    //absoluteEncoder.setVelocityConversionFactor(ModuleConstants.kTurningEncoderVelocityFactor);
+    
+    absoluteEncoder.setInverted(true);
 
-    rightMotor.setInverted(true);
-    rightMotor.follow(leftMotor);
+    //rightMotor.setInverted(true);
+    rightMotor.setIdleMode(IdleMode.kBrake);
+    rightMotor.follow(leftMotor, true);
+
     
   }
 
@@ -39,6 +46,7 @@ public class Shoulder extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Shoulder Encoder", absoluteEncoder.getPosition());
+    SmartDashboard.putNumber("zero offset", absoluteEncoder.getZeroOffset());
   }
 
   public void up() {
