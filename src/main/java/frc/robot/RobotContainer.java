@@ -49,9 +49,9 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final Shoulder m_shoulder = new Shoulder();
+  protected final Shoulder m_shoulder = new Shoulder();
   private final Arm m_arm = new Arm();
-  private final Wrist m_wrist = new Wrist();
+  protected final Wrist m_wrist = new Wrist();
   private final Claw m_claw = new Claw();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -85,6 +85,8 @@ public class RobotContainer {
               true,
               true),
           m_robotDrive));
+
+    m_shoulder.setToZero();
   }
   
 
@@ -107,23 +109,21 @@ public class RobotContainer {
     m_controllerA.leftBumper().onTrue(new InstantCommand( () -> speedModifier = HALF_SPEED)).onFalse(new InstantCommand(() -> speedModifier = FULL_SPEED));
 
     // shoulder
-    m_controllerA.x().whileTrue(new InstantCommand(m_shoulder::up)).onFalse(new InstantCommand(m_shoulder::stop));
-    m_controllerA.a().whileTrue(new InstantCommand(m_shoulder::down)).onFalse(new InstantCommand(m_shoulder::stop));
+    //m_controllerA.x().whileTrue(new InstantCommand(m_shoulder::up)).onFalse(new InstantCommand(m_shoulder::stop));
+    //m_controllerA.a().whileTrue(new InstantCommand(m_shoulder::down)).onFalse(new InstantCommand(m_shoulder::stop));
 
-    m_controllerA.b().whileTrue(new InstantCommand(m_shoulder::setPosition));
+    m_controllerA.b().whileTrue(new InstantCommand(m_shoulder::setToNinetyDegrees));//.onFalse(new InstantCommand(m_shoulder));
+    m_controllerA.y().whileTrue(new InstantCommand(m_shoulder::setToZero));
 
-
-    /*
     // arm
-    m_controllerA.y().whileTrue(new InstantCommand(m_arm::out)).onFalse(new InstantCommand(m_arm::stop));
-    m_controllerA.b().whileTrue(new InstantCommand(m_arm::in)).onFalse(new InstantCommand(m_arm::stop));
-
-    // second controller
+    //m_controllerA.x().whileTrue(new InstantCommand(m_arm::out)).onFalse(new InstantCommand(m_arm::stop));
+    //m_controllerA.a().whileTrue(new InstantCommand(m_arm::in)).onFalse(new InstantCommand(m_arm::stop));
 
     // wrist
-    m_controllerB.y().whileTrue(new InstantCommand(m_wrist::up)).onFalse(new InstantCommand(m_wrist::stop));
-    m_controllerB.b().whileTrue(new InstantCommand(m_wrist::down)).onFalse(new InstantCommand(m_wrist::stop));
+    m_controllerA.x().whileTrue(new InstantCommand(m_wrist::up)).onFalse(new InstantCommand(m_wrist::stop));
+    m_controllerA.a().whileTrue(new InstantCommand(m_wrist::down)).onFalse(new InstantCommand(m_wrist::stop));
 
+    /*
     // claw
     m_controllerB.x().whileTrue(new InstantCommand(m_claw::close)).onFalse(new InstantCommand(m_claw::stop));
     m_controllerB.a().whileTrue(new InstantCommand(m_claw::open)).onFalse(new InstantCommand(m_claw::stop));

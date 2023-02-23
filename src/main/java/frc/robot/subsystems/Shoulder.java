@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.revrobotics.SparkMaxPIDController;
 
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ModuleConstants;
@@ -22,6 +23,7 @@ public class Shoulder extends SubsystemBase {
   CANSparkMax rightMotor;
 
   private final double SPEED = 0.5;
+  private final double PID_SPEED = 0.2;
   private SparkMaxAbsoluteEncoder absoluteEncoder;
   private SparkMaxPIDController pidController;
 
@@ -34,20 +36,24 @@ public class Shoulder extends SubsystemBase {
     leftMotor.setIdleMode(IdleMode.kBrake);
     absoluteEncoder = leftMotor.getAbsoluteEncoder(Type.kDutyCycle);
     absoluteEncoder.setInverted(false);
+    //absoluteEncoder.
+    absoluteEncoder.setZeroOffset(0.25);
     pidController = leftMotor.getPIDController();
     pidController.setFeedbackDevice(absoluteEncoder);
 
-    pidController.setP(6);
-    pidController.setI(0);
-    pidController.setD(0);
+    pidController.setP(4);
+    pidController.setI(0.0004);
+    pidController.setD(2);
     pidController.setFF(0);
-    pidController.setOutputRange(-1, 1);
+    pidController.setOutputRange(-PID_SPEED, PID_SPEED);
 
     //pidController.setPositionPIDWrappingEnabled(true);
 
 
     rightMotor.setIdleMode(IdleMode.kBrake);
     rightMotor.follow(leftMotor, true);
+
+    setToZero();
   }
 
   @Override
@@ -73,7 +79,11 @@ public class Shoulder extends SubsystemBase {
     rightMotor.stopMotor();
   }
 
-  public void setPosition() {
-    pidController.setReference(0.3, CANSparkMax.ControlType.kPosition);
+  public void setToNinetyDegrees() {
+    pidController.setReference(0.28, CANSparkMax.ControlType.kPosition);
+  }
+
+  public void setToZero() {
+    leftMotor.set(0);
   }
 }
