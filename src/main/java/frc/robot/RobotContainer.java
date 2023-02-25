@@ -62,7 +62,10 @@ public class RobotContainer {
   private final CommandXboxController m_controllerB = 
       new CommandXboxController(1); // TODO - use constant
 
-  private final ColorSensor m_colorSensor = new ColorSensor();
+  // Possibly causing issues and we are not using currently
+  // See "Onboard I2C Causing System Lockups" at
+  // https://docs.wpilib.org/en/stable/docs/yearly-overview/known-issues.html
+  //private final ColorSensor m_colorSensor = new ColorSensor();
 
   private double speedModifier = 1.0;
   private final double HALF_SPEED = 0.5;
