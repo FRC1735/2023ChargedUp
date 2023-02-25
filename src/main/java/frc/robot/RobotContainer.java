@@ -148,8 +148,8 @@ public class RobotContainer {
     //m_controllerA.y().whileTrue(new InstantCommand(m_shoulder::setToZero));
 
     // arm
-    //m_controllerA.x().whileTrue(new InstantCommand(m_arm::out)).onFalse(new InstantCommand(m_arm::stop));
-    //m_controllerA.a().whileTrue(new InstantCommand(m_arm::in)).onFalse(new InstantCommand(m_arm::stop));
+    m_controllerB.x().whileTrue(new InstantCommand(m_arm::out)).onFalse(new InstantCommand(m_arm::stop));
+    m_controllerB.a().whileTrue(new InstantCommand(m_arm::in)).onFalse(new InstantCommand(m_arm::stop));
 
     // wrist
 
