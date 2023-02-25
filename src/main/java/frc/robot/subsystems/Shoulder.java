@@ -58,12 +58,10 @@ public class Shoulder extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
     SmartDashboard.putNumber("Shoulder Encoder", absoluteEncoder.getPosition());
-    SmartDashboard.putNumber("zero offset", absoluteEncoder.getZeroOffset());
-
-    SmartDashboard.putNumber("Abs Velocity", absoluteEncoder.getVelocity());
-    SmartDashboard.putNumber("Abs applied output", leftMotor.getAppliedOutput());
+    //SmartDashboard.putNumber("zero offset", absoluteEncoder.getZeroOffset());
+    //SmartDashboard.putNumber("Abs Velocity", absoluteEncoder.getVelocity());
+    //SmartDashboard.putNumber("Abs applied output", leftMotor.getAppliedOutput());
   }
 
   public void up() {

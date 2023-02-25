@@ -42,15 +42,10 @@ public class Wrist extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    // This method will be called once per scheduler run
-
     SmartDashboard.putNumber("Wrist Encoder", absoluteEncoder.getPosition());
-    SmartDashboard.putNumber("Wrist zero offset", absoluteEncoder.getZeroOffset());
-
-    SmartDashboard.putNumber("Wrist Abs Velocity", absoluteEncoder.getVelocity());
-    SmartDashboard.putNumber("Wrist Abs applied output", motor.getAppliedOutput());
-  
+    //SmartDashboard.putNumber("Wrist zero offset", absoluteEncoder.getZeroOffset());
+    //SmartDashboard.putNumber("Wrist Abs Velocity", absoluteEncoder.getVelocity());
+    //SmartDashboard.putNumber("Wrist Abs applied output", motor.getAppliedOutput());
   }
 
   public void up() {

@@ -21,6 +21,7 @@ public class ColorSensor extends SubsystemBase {
 
   @Override
   public void periodic() {
+    /*
     SmartDashboard.putNumber("RED", colorsensor.getRed());
     SmartDashboard.putNumber("GREEN", colorsensor.getGreen());
     SmartDashboard.putNumber("BLUE", colorsensor.getBlue());
@@ -29,6 +30,7 @@ public class ColorSensor extends SubsystemBase {
 
     SmartDashboard.putBoolean("isCube", isCube());
     SmartDashboard.putBoolean("isCone", isCone());
+    */
 
   }
 
