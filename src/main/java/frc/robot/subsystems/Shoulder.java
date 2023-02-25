@@ -90,7 +90,7 @@ public class Shoulder extends SubsystemBase {
   }
 
   public void top() {
-    pidController.setReference(0.177, CANSparkMax.ControlType.kPosition);
+    pidController.setReference(0.15, CANSparkMax.ControlType.kPosition);
   }
 
   public void setToZero() {
