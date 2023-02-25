@@ -65,13 +65,16 @@ public class Wrist extends SubsystemBase {
     motor.stopMotor();
   }
 
-  // todo: name
-  public void open() {
-    pidController.setReference(0.1, CANSparkMax.ControlType.kPosition);
+  public void humanPlayerStation() {
+    pidController.setReference(0.39, CANSparkMax.ControlType.kPosition);
   }
 
-  public void close() {
-    pidController.setReference(0.22, CANSparkMax.ControlType.kPosition);
+  public void mid() {
+    pidController.setReference(0.33, CANSparkMax.ControlType.kPosition);
+  }
+
+  public void top() {
+    pidController.setReference(0.3, CANSparkMax.ControlType.kPosition);
   }
 
   public void setToZero() {

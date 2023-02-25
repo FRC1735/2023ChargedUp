@@ -34,6 +34,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -110,6 +111,32 @@ public class RobotContainer {
     // todo: we have never tested this
     m_controllerA.leftBumper().onTrue(new InstantCommand( () -> speedModifier = HALF_SPEED)).onFalse(new InstantCommand(() -> speedModifier = FULL_SPEED));
 
+
+    // preset positions
+
+    // human player station
+    m_controllerA.a().onTrue(new ParallelCommandGroup(
+      new InstantCommand(m_wrist::humanPlayerStation),
+      new InstantCommand(m_shoulder::humanPlayerStation)
+      // todo - arm extension
+    ));
+
+    // mid
+    m_controllerA.b().onTrue(new ParallelCommandGroup(
+      new InstantCommand(m_wrist::mid),
+      new InstantCommand(m_shoulder::mid)
+      // todo - arm extension
+    ));
+
+    // high
+    m_controllerA.x().onTrue(new ParallelCommandGroup(
+      new InstantCommand(m_wrist::top),
+      new InstantCommand(m_shoulder::top)
+      // todo - arm extension
+    ));
+
+
+
     // shoulder
     //m_controllerA.x().whileTrue(new InstantCommand(m_shoulder::up)).onFalse(new InstantCommand(m_shoulder::stop));
     //m_controllerA.a().whileTrue(new InstantCommand(m_shoulder::down)).onFalse(new InstantCommand(m_shoulder::stop));
@@ -118,13 +145,13 @@ public class RobotContainer {
     //m_controllerA.y().whileTrue(new InstantCommand(m_shoulder::setToZero));
 
     // arm
-    m_controllerA.x().whileTrue(new InstantCommand(m_arm::out)).onFalse(new InstantCommand(m_arm::stop));
-    m_controllerA.a().whileTrue(new InstantCommand(m_arm::in)).onFalse(new InstantCommand(m_arm::stop));
+    //m_controllerA.x().whileTrue(new InstantCommand(m_arm::out)).onFalse(new InstantCommand(m_arm::stop));
+    //m_controllerA.a().whileTrue(new InstantCommand(m_arm::in)).onFalse(new InstantCommand(m_arm::stop));
 
     // wrist
 
-    m_controllerA.b().whileTrue(new InstantCommand(m_wrist::open));
-    m_controllerA.y().whileTrue(new InstantCommand(m_wrist::close));
+    //m_controllerA.b().whileTrue(new InstantCommand(m_wrist::open));
+    //m_controllerA.y().whileTrue(new InstantCommand(m_wrist::close));
 
     //m_controllerA.x().whileTrue(new InstantCommand(m_wrist::up)).onFalse(new InstantCommand(m_wrist::stop));
     //m_controllerA.a().whileTrue(new InstantCommand(m_wrist::down)).onFalse(new InstantCommand(m_wrist::stop));

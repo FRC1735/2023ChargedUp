@@ -83,6 +83,18 @@ public class Shoulder extends SubsystemBase {
     pidController.setReference(0.28, CANSparkMax.ControlType.kPosition);
   }
 
+  public void humanPlayerStation() {
+    pidController.setReference(0.16, CANSparkMax.ControlType.kPosition);
+  }
+
+  public void mid() {
+    pidController.setReference(0.22, CANSparkMax.ControlType.kPosition);
+  }
+
+  public void top() {
+    pidController.setReference(0.177, CANSparkMax.ControlType.kPosition);
+  }
+
   public void setToZero() {
     leftMotor.set(0);
   }
