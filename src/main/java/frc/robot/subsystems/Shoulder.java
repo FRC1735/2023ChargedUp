@@ -65,11 +65,11 @@ public class Shoulder extends SubsystemBase {
   }
 
   public void up() {
-    leftMotor.set(SPEED);
+    leftMotor.set(-SPEED);
   }
 
   public void down() {
-    leftMotor.set(-SPEED);
+    leftMotor.set(SPEED);
   }
 
   public void stop() {
