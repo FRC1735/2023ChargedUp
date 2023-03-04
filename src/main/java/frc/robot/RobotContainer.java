@@ -48,27 +48,25 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  protected final Shoulder m_shoulder = new Shoulder();
-  protected final Arm m_arm = new Arm();
-  protected final Wrist m_wrist = new Wrist();
-  private final Claw m_claw = new Claw();
+  private final DriveSubsystem drive = new DriveSubsystem();
+  protected final Shoulder shoulder = new Shoulder();
+  protected final Arm arm = new Arm();
+  protected final Wrist wrist = new Wrist();
+  private final Claw claw = new Claw();
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_controllerA =
+  private final CommandXboxController driveController =
       new CommandXboxController(OIConstants.kDriverControllerPort);
   
-  private final CommandXboxController m_controllerB = 
-      new CommandXboxController(1); // TODO - use constant
+  private final CommandXboxController operatorController = 
+      new CommandXboxController(OIConstants.kOperatorControllerPort);
 
   // Possibly causing issues and we are not using currently
   // See "Onboard I2C Causing System Lockups" at
   // https://docs.wpilib.org/en/stable/docs/yearly-overview/known-issues.html
   //private final ColorSensor m_colorSensor = new ColorSensor();
 
-  private double speedModifier = 1.0;
-  private final double HALF_SPEED = 0.5;
+  private double driveSpeedModifier = 1.0;
+  private final double SPEED_MODIFIER = 0.5;
   private final double FULL_SPEED = 1.0;
 
     
@@ -78,41 +76,26 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     
-    m_robotDrive.setDefaultCommand(
+    drive.setDefaultCommand(
       // The left stick controls translation of the robot.
       // Turning is controlled by the X axis of the right stick.
       new RunCommand(
-          () -> m_robotDrive.drive(
-              -MathUtil.applyDeadband(m_controllerA.getLeftY() * speedModifier, Constants.OIConstants.kDriveDeadband),
-              -MathUtil.applyDeadband(m_controllerA.getLeftX() * speedModifier, Constants.OIConstants.kDriveDeadband),
-              -MathUtil.applyDeadband(m_controllerA.getRightX() * speedModifier, Constants.OIConstants.kDriveDeadband),
+          () -> drive.drive(
+              -MathUtil.applyDeadband(driveController.getLeftY() * driveSpeedModifier, Constants.OIConstants.kDriveDeadband),
+              -MathUtil.applyDeadband(driveController.getLeftX() * driveSpeedModifier, Constants.OIConstants.kDriveDeadband),
+              -MathUtil.applyDeadband(driveController.getRightX() * driveSpeedModifier, Constants.OIConstants.kDriveDeadband),
               true,
               true),
-          m_robotDrive));
-
-    m_shoulder.setToZero();
+          drive));
   }
-  
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
 
     // first controller
-    m_controllerA.rightBumper().onTrue(new InstantCommand(m_robotDrive::zeroHeading, m_robotDrive));
+    //driveController.rightBumper().onTrue(new InstantCommand(drive::zeroHeading, drive));
     
     // todo: we have never tested this
-    m_controllerA.leftBumper().onTrue(new InstantCommand( () -> speedModifier = HALF_SPEED)).onFalse(new InstantCommand(() -> speedModifier = FULL_SPEED));
+    //driveController.leftBumper().onTrue(new InstantCommand( () -> driveSpeedModifier = SPEED_MODIFIER)).onFalse(new InstantCommand(() -> driveSpeedModifier = FULL_SPEED));
 
 
     // preset positions
@@ -163,8 +146,8 @@ public class RobotContainer {
     */
 
     // arm
-    m_controllerB.x().whileTrue(new InstantCommand(m_arm::out)).onFalse(new InstantCommand(m_arm::stop));
-    m_controllerB.a().whileTrue(new InstantCommand(m_arm::in)).onFalse(new InstantCommand(m_arm::stop));
+    //operatorController.x().whileTrue(new InstantCommand(arm::out)).onFalse(new InstantCommand(arm::stop));
+    //operatorController.a().whileTrue(new InstantCommand(arm::in)).onFalse(new InstantCommand(arm::stop));
 
     // wrist
 
@@ -179,8 +162,6 @@ public class RobotContainer {
     m_controllerB.x().whileTrue(new InstantCommand(m_claw::close)).onFalse(new InstantCommand(m_claw::stop));
     m_controllerB.a().whileTrue(new InstantCommand(m_claw::open)).onFalse(new InstantCommand(m_claw::stop));
     */
-
-
   }
 
   public Command getAutonomousCommand() {
@@ -207,20 +188,20 @@ public class RobotContainer {
 
     SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
         exampleTrajectory,
-        m_robotDrive::getPose, // Functional interface to feed supplier
+        drive::getPose, // Functional interface to feed supplier
         DriveConstants.kDriveKinematics,
 
         // Position controllers
         new PIDController(AutoConstants.kPXController, 0, 0),
         new PIDController(AutoConstants.kPYController, 0, 0),
         thetaController,
-        m_robotDrive::setModuleStates,
-        m_robotDrive);
+        drive::setModuleStates,
+        drive);
 
     // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
+    drive.resetOdometry(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
+    return swerveControllerCommand.andThen(() -> drive.drive(0, 0, 0, false, false));
   }
 }

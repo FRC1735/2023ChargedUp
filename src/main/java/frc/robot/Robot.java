@@ -49,9 +49,9 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    m_robotContainer.m_shoulder.setToZero();
-    m_robotContainer.m_wrist.setToZero();
-    m_robotContainer.m_arm.setToZero();
+    m_robotContainer.shoulder.setToZero();
+    m_robotContainer.wrist.setToZero();
+    m_robotContainer.arm.setToZero();
   }
 
   @Override
