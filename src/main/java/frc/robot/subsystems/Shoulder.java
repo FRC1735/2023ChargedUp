@@ -22,7 +22,7 @@ public class Shoulder extends SubsystemBase {
   CANSparkMax leftMotor;
   CANSparkMax rightMotor;
 
-  private final double SPEED = 0.5;
+  private final double SPEED = 0.1;
   private final double PID_SPEED = 0.2;
   private SparkMaxAbsoluteEncoder absoluteEncoder;
   private SparkMaxPIDController pidController;
@@ -37,9 +37,17 @@ public class Shoulder extends SubsystemBase {
     absoluteEncoder = leftMotor.getAbsoluteEncoder(Type.kDutyCycle);
     absoluteEncoder.setInverted(false);
     //absoluteEncoder.
-    absoluteEncoder.setZeroOffset(0.25);
+    absoluteEncoder.setZeroOffset(.5);
     pidController = leftMotor.getPIDController();
     pidController.setFeedbackDevice(absoluteEncoder);
+
+    /*
+    pidController.setP(4);
+    pidController.setI(0.0004);
+    pidController.setD(2);
+    pidController.setFF(0);
+    pidController.setOutputRange(-PID_SPEED, PID_SPEED);
+    */
 
     pidController.setP(4);
     pidController.setI(0.0004);
@@ -59,9 +67,9 @@ public class Shoulder extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Shoulder Encoder", absoluteEncoder.getPosition());
-    //SmartDashboard.putNumber("zero offset", absoluteEncoder.getZeroOffset());
-    //SmartDashboard.putNumber("Abs Velocity", absoluteEncoder.getVelocity());
-    //SmartDashboard.putNumber("Abs applied output", leftMotor.getAppliedOutput());
+    SmartDashboard.putNumber("Shoulder zero offset", absoluteEncoder.getZeroOffset());
+    SmartDashboard.putNumber("Shoulder Abs Velocity", absoluteEncoder.getVelocity());
+    SmartDashboard.putNumber("Shoulder Abs applied output", leftMotor.getAppliedOutput());
   }
 
   public void up() {
@@ -78,9 +86,11 @@ public class Shoulder extends SubsystemBase {
   }
 
   public void setToNinetyDegrees() {
-    pidController.setReference(0.28, CANSparkMax.ControlType.kPosition);
+    pidController.setReference(0.48, CANSparkMax.ControlType.kPosition);
   }
 
+  // todo: all of these encoder values are now wrong
+  /*
   public void humanPlayerStation() {
     pidController.setReference(0.16, CANSparkMax.ControlType.kPosition);
   }
@@ -92,6 +102,7 @@ public class Shoulder extends SubsystemBase {
   public void top() {
     pidController.setReference(0.15, CANSparkMax.ControlType.kPosition);
   }
+  */
 
   public void setToZero() {
     leftMotor.set(0);
