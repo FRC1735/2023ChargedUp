@@ -72,11 +72,21 @@ public class Shoulder extends SubsystemBase {
     SmartDashboard.putNumber("Shoulder Abs applied output", leftMotor.getAppliedOutput());
   }
 
-  public void up() {
+  public void manualControl(final double direction) {
+    final double LIMIT = 0.25;
+
+    if (direction > LIMIT) {
+      up();
+    } else if (direction < -LIMIT) {
+      down();
+    }
+  }
+
+  private void up() {
     leftMotor.set(-SPEED);
   }
 
-  public void down() {
+  private void down() {
     leftMotor.set(SPEED);
   }
 

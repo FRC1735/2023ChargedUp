@@ -196,8 +196,8 @@ public class RobotContainer {
     // TODO: Unsure if this is correct
     shoulder.setDefaultCommand(
       new RunCommand(() -> {
-        // TODO - function for recieving analog stick input
-      }, arm));
+        shoulder.manualControl(operatorController.getLeftY());
+    }, arm));
 
     // Open Claw
     operatorController.rightBumper().onTrue(new InstantCommand());
