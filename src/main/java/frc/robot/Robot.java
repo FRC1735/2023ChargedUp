@@ -51,6 +51,7 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     m_robotContainer.m_shoulder.setToZero();
     m_robotContainer.m_wrist.setToZero();
+    m_robotContainer.m_arm.setToZero();
   }
 
   @Override

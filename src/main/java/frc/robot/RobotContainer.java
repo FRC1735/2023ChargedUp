@@ -51,7 +51,7 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   protected final Shoulder m_shoulder = new Shoulder();
-  private final Arm m_arm = new Arm();
+  protected final Arm m_arm = new Arm();
   protected final Wrist m_wrist = new Wrist();
   private final Claw m_claw = new Claw();
 
@@ -118,12 +118,15 @@ public class RobotContainer {
     // preset positions
 
     // human player station
+    /*
     m_controllerA.a().onTrue(new ParallelCommandGroup(
       new InstantCommand(m_wrist::humanPlayerStation),
       new InstantCommand(m_shoulder::humanPlayerStation)
       // todo - arm extension
     ));
+    */
 
+    /*
     // mid
     m_controllerA.b().onTrue(new ParallelCommandGroup(
       new InstantCommand(m_wrist::mid),
@@ -132,13 +135,16 @@ public class RobotContainer {
     ));
 
     // high
-    m_controllerA.x().onTrue(new ParallelCommandGroup(
+    m_controllerA.y().onTrue(new ParallelCommandGroup(
       new InstantCommand(m_wrist::top),
       new InstantCommand(m_shoulder::top)
       // todo - arm extension
     ));
+    */
 
-
+    // manual shoulder control
+    //m_controllerA.x().whileTrue(new InstantCommand(m_shoulder::up)).onFalse(new InstantCommand(m_shoulder::stop));
+    //m_controllerA.a().whileTrue(new InstantCommand(m_shoulder::down)).onFalse(new InstantCommand(m_shoulder::stop));
 
     // shoulder
     //m_controllerA.x().whileTrue(new InstantCommand(m_shoulder::up)).onFalse(new InstantCommand(m_shoulder::stop));
@@ -146,6 +152,15 @@ public class RobotContainer {
 
     //m_controllerA.b().whileTrue(new InstantCommand(m_shoulder::setToNinetyDegrees));//.onFalse(new InstantCommand(m_shoulder));
     //m_controllerA.y().whileTrue(new InstantCommand(m_shoulder::setToZero));
+
+    // testing 90 degrees
+    /*
+    m_controllerA.b().onTrue(new ParallelCommandGroup(
+      //new InstantCommand(m_wrist::mid),
+      new InstantCommand(m_shoulder::setToNinetyDegrees)
+      // todo - arm extension
+    ));
+    */
 
     // arm
     m_controllerB.x().whileTrue(new InstantCommand(m_arm::out)).onFalse(new InstantCommand(m_arm::stop));
@@ -166,7 +181,7 @@ public class RobotContainer {
     */
 
 
-    }
+  }
 
   public Command getAutonomousCommand() {
     // Create config for trajectory

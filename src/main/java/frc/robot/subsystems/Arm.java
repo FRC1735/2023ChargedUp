@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxAlternateEncoder;
+import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
@@ -18,37 +19,50 @@ import frc.robot.Constants.ArmConstants;
 public class Arm extends SubsystemBase {
   CANSparkMax motor;
 
-  double SPEED = 1;
+  double SPEED = 0.5; //1;
+  double PID_SPEED = 1;
 
-  private RelativeEncoder alternateEncoder;
-
+  private SparkMaxAbsoluteEncoder absoluteEncoder;
+  private SparkMaxPIDController pidController;
 
   /** Creates a new Arm. */
   public Arm() {
     this.motor = new CANSparkMax(ArmConstants.canId, MotorType.kBrushless);
-    //absoluteEncoder = this.motor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle, );
+    absoluteEncoder = this.motor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
+    pidController = this.motor.getPIDController();
+    pidController.setFeedbackDevice(absoluteEncoder);
 
-    alternateEncoder = this.motor.getAlternateEncoder(SparkMaxAlternateEncoder.Type.kQuadrature, 8192);
+    pidController.setP(1);
+    pidController.setI(0);
+    pidController.setD(0);
+    pidController.setFF(0);
+    pidController.setOutputRange(-PID_SPEED, PID_SPEED);
   }
 
   @Override
   public void periodic() {
-    /*
-    SmartDashboard.putNumber("Applied Output", motor.getAppliedOutput());
-    SmartDashboard.putNumber("Alt Encoder Velocity", alternateEncoder.getVelocity());
-    SmartDashboard.putNumber("Alt encoder position", alternateEncoder.getPosition());
-    */
+    SmartDashboard.putNumber("arm encoder", absoluteEncoder.getPosition());
+    SmartDashboard.putNumber("arm abs velocity", absoluteEncoder.getVelocity());
+    SmartDashboard.putNumber("arm applied output", motor.getAppliedOutput());
   }
 
   public void in() {
-    motor.set(SPEED);
+    if (absoluteEncoder.getPosition() < 0.933) {
+      motor.set(SPEED);
+    }
   }
 
   public void out() {
-    motor.set(-SPEED);
+    if (absoluteEncoder.getPosition() > 0.06 ) {
+      motor.set(-SPEED);
+    }
   }
 
   public void stop() {
     motor.stopMotor();
+  }
+
+  public void setToZero() {
+    this.motor.set(0);
   }
 }
