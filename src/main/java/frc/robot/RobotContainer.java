@@ -73,6 +73,8 @@ public class RobotContainer {
   public RobotContainer() {
     configureDriveController();
     configureOperatorController();
+
+    // TODO - for both autonomous and teleop - start in storage mode
   }
 
   private void configureBindings() {
@@ -89,7 +91,8 @@ public class RobotContainer {
 
     /*
     // mid
-    m_controllerA.b().onTrue(new ParallelCommandGroup(
+    m_controllerA.b().onTrue(
+    new ParallelCommandGroup(
       new InstantCommand(m_wrist::mid),
       new InstantCommand(m_shoulder::mid)
       // todo - arm extension
