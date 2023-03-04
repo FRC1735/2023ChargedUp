@@ -69,35 +69,12 @@ public class RobotContainer {
   private final double SPEED_MODIFIER = 0.5;
   private final double FULL_SPEED = 1.0;
 
-    
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-
-    // Configure the trigger bindings
-    configureBindings();
-    
-    drive.setDefaultCommand(
-      // The left stick controls translation of the robot.
-      // Turning is controlled by the X axis of the right stick.
-      new RunCommand(
-          () -> drive.drive(
-              -MathUtil.applyDeadband(driveController.getLeftY() * driveSpeedModifier, Constants.OIConstants.kDriveDeadband),
-              -MathUtil.applyDeadband(driveController.getLeftX() * driveSpeedModifier, Constants.OIConstants.kDriveDeadband),
-              -MathUtil.applyDeadband(driveController.getRightX() * driveSpeedModifier, Constants.OIConstants.kDriveDeadband),
-              true,
-              true),
-          drive));
+    configureDriveController();
+    configureOperatorController();
   }
 
   private void configureBindings() {
-
-    // first controller
-    //driveController.rightBumper().onTrue(new InstantCommand(drive::zeroHeading, drive));
-    
-    // todo: we have never tested this
-    //driveController.leftBumper().onTrue(new InstantCommand( () -> driveSpeedModifier = SPEED_MODIFIER)).onFalse(new InstantCommand(() -> driveSpeedModifier = FULL_SPEED));
-
-
     // preset positions
 
     // human player station
@@ -162,6 +139,29 @@ public class RobotContainer {
     m_controllerB.x().whileTrue(new InstantCommand(m_claw::close)).onFalse(new InstantCommand(m_claw::stop));
     m_controllerB.a().whileTrue(new InstantCommand(m_claw::open)).onFalse(new InstantCommand(m_claw::stop));
     */
+  }
+
+  private void configureDriveController() {
+    // Swerve drive with left and right joysticks, also applies speed modifier and deadband
+    drive.setDefaultCommand(
+      new RunCommand(
+          () -> drive.drive(
+              -MathUtil.applyDeadband(driveController.getLeftY() * driveSpeedModifier, Constants.OIConstants.kDriveDeadband),
+              -MathUtil.applyDeadband(driveController.getLeftX() * driveSpeedModifier, Constants.OIConstants.kDriveDeadband),
+              -MathUtil.applyDeadband(driveController.getRightX() * driveSpeedModifier, Constants.OIConstants.kDriveDeadband),
+              true,
+              true),
+      drive));
+
+      // Zero gyro, use if you want to reset field oriented drive
+      driveController.rightBumper().onTrue(new InstantCommand(drive::zeroHeading, drive));
+
+      // Apply speed modifier, that is slow down when left bumper held
+      driveController.leftBumper().onTrue(new InstantCommand( () -> driveSpeedModifier = SPEED_MODIFIER)).onFalse(new InstantCommand(() -> driveSpeedModifier = FULL_SPEED));
+  }
+
+  private void configureOperatorController() {
+
   }
 
   public Command getAutonomousCommand() {
