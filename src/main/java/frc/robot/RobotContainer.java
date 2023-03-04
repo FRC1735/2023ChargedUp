@@ -187,10 +187,11 @@ public class RobotContainer {
     operatorController.back().onTrue(new PrintCommand("Back pressed"));
 
     // Extend Arm
-    operatorController.povUp().onTrue(new InstantCommand());
+    // TODO: Verify that limit is working on this
+    operatorController.povUp().onTrue(new InstantCommand(arm::out, arm));
 
     // Retract Arm
-    operatorController.povDown().onTrue(new InstantCommand());
+    operatorController.povDown().onTrue(new InstantCommand(arm::in, arm));
 
     // Move shoulder up and down
     // TODO: Unsure if this is correct

@@ -22,6 +22,9 @@ public class Arm extends SubsystemBase {
   double SPEED = 0.5; //1;
   double PID_SPEED = 1;
 
+  double OUT_LIMIT = 0.06;
+  double IN_LIMIT = 0.933;
+
   private SparkMaxAbsoluteEncoder absoluteEncoder;
   private SparkMaxPIDController pidController;
 
@@ -47,13 +50,13 @@ public class Arm extends SubsystemBase {
   }
 
   public void in() {
-    if (absoluteEncoder.getPosition() < 0.933) {
+    if (absoluteEncoder.getPosition() < IN_LIMIT) {
       motor.set(SPEED);
     }
   }
 
   public void out() {
-    if (absoluteEncoder.getPosition() > 0.06 ) {
+    if (absoluteEncoder.getPosition() > OUT_LIMIT ) {
       motor.set(-SPEED);
     }
   }
