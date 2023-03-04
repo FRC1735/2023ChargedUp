@@ -201,11 +201,14 @@ public class RobotContainer {
     }, arm));
 
     // Open Claw
-    operatorController.rightBumper().onTrue(new InstantCommand());
+    operatorController.rightBumper().onTrue(new InstantCommand(claw::open, claw));
 
     // Close Claw
     // TODO: Haven't used this before but it looks right rightTrigger 
     // TODO: returns true when it is over 50% pressed
+    // TODO: Use 
+    //         new InstantCommand(claw::close, claw);
+    // TODO: after verifying
     operatorController.rightTrigger().onTrue(new PrintCommand("Right Trigger pressed"));
 
     // Down Wrist

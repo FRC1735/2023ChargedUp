@@ -13,8 +13,12 @@ import frc.robot.Constants;
 
 public class Claw extends SubsystemBase {
   CANSparkMax motor;
+  
   private final double SPEED = 0.25;
 
+  // TODO: Implement encoder
+  // TODO: Implement encoder based limits
+  
   /** Creates a new Claw. */
   public Claw() {
     this.motor = new CANSparkMax(Constants.ClawConstants.canId, MotorType.kBrushless);
