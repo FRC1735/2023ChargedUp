@@ -212,10 +212,14 @@ public class RobotContainer {
     operatorController.rightTrigger().onTrue(new PrintCommand("Right Trigger pressed"));
 
     // Down Wrist
-    operatorController.leftBumper().onTrue(new InstantCommand());
+    operatorController.leftBumper().onTrue(new InstantCommand(wrist::down, wrist));
 
     // Up Wrist
     // TODO: As with right trigger, verify this does what we want
+    // TODO: Use 
+    //         new InstantCommand(wrist::up, wrist);
+    // TODO: after verifying
+
     operatorController.leftTrigger().onTrue(new PrintCommand("Left Trigger pressed"));
   }
 
