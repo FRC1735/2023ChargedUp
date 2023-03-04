@@ -35,6 +35,7 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -161,7 +162,57 @@ public class RobotContainer {
   }
 
   private void configureOperatorController() {
+    // Storage
+    operatorController.a().onTrue(new InstantCommand());
 
+    // Score Mid
+    operatorController.b().onTrue(new InstantCommand());
+
+    // Pickup Front
+    operatorController.x().onTrue(new InstantCommand());
+
+    // Score High
+    operatorController.y().onTrue(new InstantCommand());
+
+    // Pickup High
+    // TODO: Unclear to me if "start" is the right button
+    // TODO: In the XBox button diagram it is referred to as "menu"
+    // TODO: Verify before using
+    operatorController.start().onTrue(new PrintCommand("Start pressed"));
+
+    // Pickup Human Player Station
+    // TODO: Unclear to me if "back" is the right button
+    // TODO: In the XBox button diagram it is referred to as "view"
+    // TODO: Verify before using
+    operatorController.back().onTrue(new PrintCommand("Back pressed"));
+
+    // Extend Arm
+    operatorController.povUp().onTrue(new InstantCommand());
+
+    // Retract Arm
+    operatorController.povDown().onTrue(new InstantCommand());
+
+    // Move shoulder up and down
+    // TODO: Unsure if this is correct
+    shoulder.setDefaultCommand(
+      new RunCommand(() -> {
+        // TODO - function for recieving analog stick input
+      }, arm));
+
+    // Open Claw
+    operatorController.rightBumper().onTrue(new InstantCommand());
+
+    // Close Claw
+    // TODO: Haven't used this before but it looks right rightTrigger 
+    // TODO: returns true when it is over 50% pressed
+    operatorController.rightTrigger().onTrue(new PrintCommand("Right Trigger pressed"));
+
+    // Down Wrist
+    operatorController.leftBumper().onTrue(new InstantCommand());
+
+    // Up Wrist
+    // TODO: As with right trigger, verify this does what we want
+    operatorController.leftTrigger().onTrue(new PrintCommand("Left Trigger pressed"));
   }
 
   public Command getAutonomousCommand() {
