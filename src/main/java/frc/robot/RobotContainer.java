@@ -178,16 +178,10 @@ public class RobotContainer {
     operatorController.y().onTrue(new InstantCommand());
 
     // Pickup High
-    // TODO: Unclear to me if "start" is the right button
-    // TODO: In the XBox button diagram it is referred to as "menu"
-    // TODO: Verify before using
-    operatorController.start().onTrue(new PrintCommand("Start pressed"));
+    operatorController.start().onTrue(new InstantCommand());
 
     // Pickup Human Player Station
-    // TODO: Unclear to me if "back" is the right button
-    // TODO: In the XBox button diagram it is referred to as "view"
-    // TODO: Verify before using
-    operatorController.back().onTrue(new PrintCommand("Back pressed"));
+    operatorController.back().onTrue(new InstantCommand());
 
     // Extend Arm
     // TODO: Verify that limit is working on this
@@ -201,29 +195,19 @@ public class RobotContainer {
     shoulder.setDefaultCommand(
       new RunCommand(() -> {
         shoulder.manualControl(operatorController.getLeftY());
-    }, arm));
+    }, shoulder));
 
     // Open Claw
     operatorController.rightBumper().onTrue(new InstantCommand(claw::open, claw));
 
     // Close Claw
-    // TODO: Haven't used this before but it looks right rightTrigger 
-    // TODO: returns true when it is over 50% pressed
-    // TODO: Use 
-    //         new InstantCommand(claw::close, claw);
-    // TODO: after verifying
-    operatorController.rightTrigger().onTrue(new PrintCommand("Right Trigger pressed"));
+    operatorController.rightTrigger().onTrue(new InstantCommand(claw::close, claw));
 
     // Down Wrist
     operatorController.leftBumper().onTrue(new InstantCommand(wrist::down, wrist));
 
     // Up Wrist
-    // TODO: As with right trigger, verify this does what we want
-    // TODO: Use 
-    //         new InstantCommand(wrist::up, wrist);
-    // TODO: after verifying
-
-    operatorController.leftTrigger().onTrue(new PrintCommand("Left Trigger pressed"));
+    operatorController.leftTrigger().onTrue(new InstantCommand(wrist::up, wrist));
   }
 
   public Command getAutonomousCommand() {
