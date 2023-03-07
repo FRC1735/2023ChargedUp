@@ -194,7 +194,7 @@ public class RobotContainer {
     // TODO: Unsure if this is correct
     shoulder.setDefaultCommand(
       new RunCommand(() -> {
-        shoulder.manualControl(operatorController.getLeftY());
+        shoulder.manualControl(-operatorController.getLeftY());
     }, shoulder));
 
     // Open Claw

@@ -37,7 +37,7 @@ public class Shoulder extends SubsystemBase {
     absoluteEncoder = leftMotor.getAbsoluteEncoder(Type.kDutyCycle);
     absoluteEncoder.setInverted(false);
     //absoluteEncoder.
-    absoluteEncoder.setZeroOffset(.5);
+    absoluteEncoder.setZeroOffset(.6);
     pidController = leftMotor.getPIDController();
     pidController.setFeedbackDevice(absoluteEncoder);
 
@@ -49,9 +49,9 @@ public class Shoulder extends SubsystemBase {
     pidController.setOutputRange(-PID_SPEED, PID_SPEED);
     */
 
-    pidController.setP(4);
-    pidController.setI(0.0004);
-    pidController.setD(2);
+    pidController.setP(0);
+    pidController.setI(0);
+    pidController.setD(0);
     pidController.setFF(0);
     pidController.setOutputRange(-PID_SPEED, PID_SPEED);
 
@@ -79,6 +79,8 @@ public class Shoulder extends SubsystemBase {
       up();
     } else if (direction < -LIMIT) {
       down();
+    } else {
+      leftMotor.set(0);
     }
   }
 
@@ -96,7 +98,7 @@ public class Shoulder extends SubsystemBase {
   }
 
   public void setToNinetyDegrees() {
-    pidController.setReference(0.48, CANSparkMax.ControlType.kPosition);
+    pidController.setReference(0.37, CANSparkMax.ControlType.kPosition);
   }
 
   // todo: all of these encoder values are now wrong
