@@ -204,10 +204,10 @@ public class RobotContainer {
     operatorController.rightTrigger().onTrue(new InstantCommand(claw::close, claw));
 
     // Down Wrist
-    operatorController.leftBumper().onTrue(new InstantCommand(wrist::down, wrist));
+    operatorController.leftBumper().onTrue(new InstantCommand(wrist::down, wrist)).onFalse(new InstantCommand(wrist::stop, wrist));
 
     // Up Wrist
-    operatorController.leftTrigger().onTrue(new InstantCommand(wrist::up, wrist));
+    operatorController.leftTrigger().onTrue(new InstantCommand(wrist::up, wrist)).onFalse(new InstantCommand(wrist::stop, wrist));
   }
 
   public Command getAutonomousCommand() {
