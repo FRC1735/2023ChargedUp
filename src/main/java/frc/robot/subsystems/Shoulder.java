@@ -49,7 +49,7 @@ public class Shoulder extends SubsystemBase {
     pidController.setOutputRange(-PID_SPEED, PID_SPEED);
     */
 
-    pidController.setP(0);
+    pidController.setP(1);
     pidController.setI(0);
     pidController.setD(0);
     pidController.setFF(0);

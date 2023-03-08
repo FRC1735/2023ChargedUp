@@ -166,16 +166,28 @@ public class RobotContainer {
 
   private void configureOperatorController() {
     // Storage
-    operatorController.a().onTrue(new InstantCommand());
+    operatorController.a().onTrue(new ParallelCommandGroup(
+      //new InstantCommand(wrist::storage, wrist)
+      new InstantCommand(arm::mid, arm)
+    ));
 
     // Score Mid
-    operatorController.b().onTrue(new InstantCommand());
+    operatorController.b().onTrue(new ParallelCommandGroup(
+      //new InstantCommand(wrist::mid, wrist)
+      new InstantCommand(shoulder::setToNinetyDegrees, shoulder)
+    ));
 
     // Pickup Front
-    operatorController.x().onTrue(new InstantCommand());
+    operatorController.x().onTrue(new ParallelCommandGroup(
+      //new InstantCommand(wrist::storage, wrist)
+      new InstantCommand(arm::high, arm)
+    ));
 
     // Score High
-    operatorController.y().onTrue(new InstantCommand());
+    operatorController.y().onTrue(new ParallelCommandGroup(
+      //new InstantCommand(wrist::storage, wrist)
+      new InstantCommand(wrist::storage, wrist)
+    ));
 
     // Pickup High
     operatorController.start().onTrue(new InstantCommand());
@@ -185,17 +197,19 @@ public class RobotContainer {
 
     // Extend Arm
     // TODO: Verify that limit is working on this
-    operatorController.povUp().onTrue(new InstantCommand(arm::out, arm));
+    operatorController.povUp().onTrue(new InstantCommand(arm::out, arm)).onFalse(new InstantCommand(arm::stop, arm));
 
     // Retract Arm
-    operatorController.povDown().onTrue(new InstantCommand(arm::in, arm));
+    operatorController.povDown().onTrue(new InstantCommand(arm::in, arm)).onFalse(new InstantCommand(arm::stop, arm));
 
     // Move shoulder up and down
-    // TODO: Unsure if this is correct
+    // TODO: When this is on it interferes with PID control
+    /*
     shoulder.setDefaultCommand(
       new RunCommand(() -> {
         shoulder.manualControl(-operatorController.getLeftY());
     }, shoulder));
+    */
 
     // Open Claw
     operatorController.rightBumper().onTrue(new InstantCommand(claw::open, claw));

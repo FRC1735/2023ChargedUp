@@ -9,6 +9,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxAlternateEncoder;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
@@ -19,10 +20,10 @@ import frc.robot.Constants.ArmConstants;
 public class Arm extends SubsystemBase {
   CANSparkMax motor;
 
-  double SPEED = 0.5; //1;
+  double SPEED = 0.2; //1;
   double PID_SPEED = 1;
 
-  double OUT_LIMIT = 0.06;
+  double OUT_LIMIT = 0.08;
   double IN_LIMIT = 0.933;
 
   private SparkMaxAbsoluteEncoder absoluteEncoder;
@@ -35,7 +36,7 @@ public class Arm extends SubsystemBase {
     pidController = this.motor.getPIDController();
     pidController.setFeedbackDevice(absoluteEncoder);
 
-    pidController.setP(1);
+    pidController.setP(1.5);
     pidController.setI(0);
     pidController.setD(0);
     pidController.setFF(0);
@@ -59,6 +60,14 @@ public class Arm extends SubsystemBase {
     if (absoluteEncoder.getPosition() > OUT_LIMIT ) {
       motor.set(-SPEED);
     }
+  }
+
+  public void mid() {
+    pidController.setReference(0.74, ControlType.kPosition);
+  }
+
+  public void high() {
+    pidController.setReference(0.04, ControlType.kPosition);
   }
 
   public void stop() {

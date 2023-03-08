@@ -29,9 +29,13 @@ public class Wrist extends SubsystemBase {
 
     absoluteEncoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
     absoluteEncoder.setInverted(true);
+    absoluteEncoder.setZeroOffset(0.5);
+
     motor.setIdleMode(IdleMode.kBrake);
     pidController = motor.getPIDController();
     pidController.setFeedbackDevice(absoluteEncoder);
+
+    //pidController.setPositionPIDWrappingEnabled(false);
 
     pidController.setP(1.5);
     pidController.setI(0.002);
@@ -60,12 +64,16 @@ public class Wrist extends SubsystemBase {
     motor.stopMotor();
   }
 
+  public void storage() {
+    pidController.setReference(0.36, CANSparkMax.ControlType.kPosition);
+  }
+
   public void humanPlayerStation() {
     pidController.setReference(0.39, CANSparkMax.ControlType.kPosition);
   }
 
   public void mid() {
-    pidController.setReference(0.33, CANSparkMax.ControlType.kPosition);
+    pidController.setReference(0.78, CANSparkMax.ControlType.kPosition);
   }
 
   public void top() {
