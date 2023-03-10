@@ -62,12 +62,28 @@ public class Arm extends SubsystemBase {
     }
   }
 
-  public void mid() {
-    pidController.setReference(0.74, ControlType.kPosition);
+  public void storage() {
+    pidController.setReference(0.94, CANSparkMax.ControlType.kPosition); 
   }
 
-  public void high() {
-    pidController.setReference(0.04, ControlType.kPosition);
+  public void scoreMid() {
+    pidController.setReference(0.71, CANSparkMax.ControlType.kPosition);
+  }
+
+  public void pickupFront() {
+    pidController.setReference(0.62, CANSparkMax.ControlType.kPosition);
+  }
+
+  public void scoreHigh() {
+    pidController.setReference(0.04, CANSparkMax.ControlType.kPosition);
+  }
+
+  public void pickupAbove() {
+    pidController.setReference(0.49, CANSparkMax.ControlType.kPosition);
+  }
+
+  public void humanPlayerStation() {
+    pidController.setReference(0.96, CANSparkMax.ControlType.kPosition);
   }
 
   public void stop() {

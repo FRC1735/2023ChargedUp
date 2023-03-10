@@ -18,7 +18,7 @@ import frc.robot.Constants;
 public class Wrist extends SubsystemBase {
   private CANSparkMax motor;
   private final double SPEED = 0.1;
-  private final double PID_SPEED = 0.1;
+  private final double PID_SPEED = 0.8;
   private SparkMaxAbsoluteEncoder absoluteEncoder;
   private SparkMaxPIDController pidController;
 
@@ -37,8 +37,8 @@ public class Wrist extends SubsystemBase {
 
     //pidController.setPositionPIDWrappingEnabled(false);
 
-    pidController.setP(1.5);
-    pidController.setI(0.002);
+    pidController.setP(2);
+    pidController.setI(0.004);
     pidController.setD(0);
     pidController.setFF(0);
     pidController.setOutputRange(-PID_SPEED, PID_SPEED);
@@ -53,10 +53,12 @@ public class Wrist extends SubsystemBase {
   }
 
   public void up() {
+    // todo - limits
     motor.set(-SPEED);
   }
 
   public void down() {
+    // todo - limits
     motor.set(SPEED);
   }
 
@@ -65,19 +67,27 @@ public class Wrist extends SubsystemBase {
   }
 
   public void storage() {
-    pidController.setReference(0.36, CANSparkMax.ControlType.kPosition);
+    pidController.setReference(0.34, CANSparkMax.ControlType.kPosition); 
+  }
+
+  public void scoreMid() {
+    pidController.setReference(0.81, CANSparkMax.ControlType.kPosition);
+  }
+
+  public void pickupFront() {
+    pidController.setReference(0.71, CANSparkMax.ControlType.kPosition);
+  }
+
+  public void scoreHigh() {
+    pidController.setReference(0.81, CANSparkMax.ControlType.kPosition);
+  }
+
+  public void pickupAbove() {
+    pidController.setReference(0.94, CANSparkMax.ControlType.kPosition);
   }
 
   public void humanPlayerStation() {
-    pidController.setReference(0.39, CANSparkMax.ControlType.kPosition);
-  }
-
-  public void mid() {
-    pidController.setReference(0.78, CANSparkMax.ControlType.kPosition);
-  }
-
-  public void top() {
-    pidController.setReference(0.3, CANSparkMax.ControlType.kPosition);
+    pidController.setReference(0.91, CANSparkMax.ControlType.kPosition);
   }
 
   public void setToZero() {

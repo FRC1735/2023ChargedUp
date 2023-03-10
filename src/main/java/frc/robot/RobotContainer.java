@@ -167,33 +167,39 @@ public class RobotContainer {
   private void configureOperatorController() {
     // Storage
     operatorController.a().onTrue(new ParallelCommandGroup(
-      //new InstantCommand(wrist::storage, wrist)
-      new InstantCommand(arm::mid, arm)
+      //new InstantCommand(shoulder::storage),
+      new InstantCommand(wrist::storage)
     ));
 
     // Score Mid
     operatorController.b().onTrue(new ParallelCommandGroup(
-      //new InstantCommand(wrist::mid, wrist)
-      new InstantCommand(shoulder::setToNinetyDegrees, shoulder)
+      new InstantCommand(shoulder::scoreMid, shoulder),
+      new InstantCommand(wrist::scoreMid)
     ));
 
     // Pickup Front
     operatorController.x().onTrue(new ParallelCommandGroup(
-      //new InstantCommand(wrist::storage, wrist)
-      new InstantCommand(arm::high, arm)
+      new InstantCommand(shoulder::pickupFront, shoulder),
+      new InstantCommand(wrist::pickupFront)
     ));
 
     // Score High
     operatorController.y().onTrue(new ParallelCommandGroup(
-      //new InstantCommand(wrist::storage, wrist)
-      new InstantCommand(wrist::storage, wrist)
+      new InstantCommand(shoulder::scoreHigh, shoulder),
+      new InstantCommand(wrist::scoreHigh)
     ));
 
-    // Pickup High
-    operatorController.start().onTrue(new InstantCommand());
+    // Pickup Above
+    operatorController.start().onTrue(new ParallelCommandGroup(
+      new InstantCommand(shoulder::pickupAbove, shoulder),
+      new InstantCommand(wrist::pickupAbove)
+    ));
 
     // Pickup Human Player Station
-    operatorController.back().onTrue(new InstantCommand());
+    operatorController.back().onTrue(new ParallelCommandGroup(
+      new InstantCommand(shoulder::humanPlayerStation, shoulder),
+      new InstantCommand(wrist::humanPlayerStation)
+    ));
 
     // Extend Arm
     // TODO: Verify that limit is working on this
@@ -212,10 +218,10 @@ public class RobotContainer {
     */
 
     // Open Claw
-    operatorController.rightBumper().onTrue(new InstantCommand(claw::open, claw));
+    operatorController.rightBumper().onTrue(new InstantCommand(claw::open, claw)).onFalse(new InstantCommand(claw::stop));
 
     // Close Claw
-    operatorController.rightTrigger().onTrue(new InstantCommand(claw::close, claw));
+    operatorController.rightTrigger().onTrue(new InstantCommand(claw::close, claw)).onFalse(new InstantCommand(claw::stop));
 
     // Down Wrist
     operatorController.leftBumper().onTrue(new InstantCommand(wrist::down, wrist)).onFalse(new InstantCommand(wrist::stop, wrist));

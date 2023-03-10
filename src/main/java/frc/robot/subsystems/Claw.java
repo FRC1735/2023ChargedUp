@@ -5,9 +5,13 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
+import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -16,6 +20,9 @@ public class Claw extends SubsystemBase {
   
   private final double SPEED = 0.25;
 
+  private SparkMaxAbsoluteEncoder absoluteEncoder;
+  //private SparkMaxPIDController pidController;
+
   // TODO: Implement encoder
   // TODO: Implement encoder based limits
   
@@ -23,11 +30,17 @@ public class Claw extends SubsystemBase {
   public Claw() {
     this.motor = new CANSparkMax(Constants.ClawConstants.canId, MotorType.kBrushless);
     this.motor.setIdleMode(IdleMode.kBrake);
+
+    absoluteEncoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Claw Encoder", absoluteEncoder.getPosition());
+    SmartDashboard.putNumber("Claw zero offset", absoluteEncoder.getZeroOffset());
+    SmartDashboard.putNumber("Claw Abs Velocity", absoluteEncoder.getVelocity());
+    SmartDashboard.putNumber("Claw Abs applied output", motor.getAppliedOutput());
+ 
   }
 
   public void open() {

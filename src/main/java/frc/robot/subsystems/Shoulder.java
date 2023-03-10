@@ -116,6 +116,30 @@ public class Shoulder extends SubsystemBase {
   }
   */
 
+  public void storage() {
+    pidController.setReference(0.96, CANSparkMax.ControlType.kPosition); 
+  }
+
+  public void scoreMid() {
+    pidController.setReference(0.28, CANSparkMax.ControlType.kPosition);
+  }
+
+  public void pickupFront() {
+    pidController.setReference(0.75, CANSparkMax.ControlType.kPosition);
+  }
+
+  public void scoreHigh() {
+    pidController.setReference(0.24, CANSparkMax.ControlType.kPosition);
+  }
+
+  public void pickupAbove() {
+    pidController.setReference(0.7, CANSparkMax.ControlType.kPosition);
+  }
+
+  public void humanPlayerStation() {
+    pidController.setReference(0.25, CANSparkMax.ControlType.kPosition);
+  }
+
   public void setToZero() {
     leftMotor.set(0);
   }
