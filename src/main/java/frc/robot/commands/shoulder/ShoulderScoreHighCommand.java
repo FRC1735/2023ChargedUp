@@ -31,12 +31,14 @@ public class ShoulderScoreHighCommand extends CommandBase {
   public boolean isFinished() {
     if (shoulder.isAtScoreHigh()) {
       reachedSetpoint += 1;
+      //System.out.println("JTA - Shoulder Score High reached setpoint");
     } else {
       reachedSetpoint = 0;
+      //System.out.println("JTA - Shoulder Score High DID NOT reached setpoint");
     }
 
-    if (reachedSetpoint == SETPOINT_LIMIT) {
-      System.out.println("JTA - Shoulder Score High Finished");
+    if (reachedSetpoint >= SETPOINT_LIMIT) {
+      //System.out.println("JTA - Shoulder Score High Finished");
       return true;
     } else {
       return false;

@@ -35,6 +35,6 @@ public class ShoulderStorageCommand extends CommandBase {
       reachedSetpoint = 0;
     }
 
-    return reachedSetpoint == SETPOINT_LIMIT;
+    return reachedSetpoint >= SETPOINT_LIMIT;
   }
 }

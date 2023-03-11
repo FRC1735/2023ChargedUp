@@ -13,8 +13,8 @@ import com.revrobotics.SparkMaxPIDController;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Utils;
 import frc.robot.Constants.ShoulderConstants;
+import frc.utils.Utils;
 
 public class Shoulder extends SubsystemBase {
   CANSparkMax leftMotor;

@@ -35,8 +35,8 @@ public class ShoulderScoreMidCommand extends CommandBase {
       reachedSetpoint = 0;
     }
 
-    if (reachedSetpoint == SETPOINT_LIMIT) {
-      System.out.println("JTA - Shoulder Score Mid Finished");
+    if (reachedSetpoint >= SETPOINT_LIMIT) {
+      //System.out.println("JTA - Shoulder Score Mid Finished");
       return true;
     } else {
       return false;
