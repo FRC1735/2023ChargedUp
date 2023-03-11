@@ -9,6 +9,8 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.shoulder.ShoulderScoreHighCommand;
+import frc.robot.commands.shoulder.ShoulderScoreMidCommand;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.ColorSensor;
@@ -37,6 +39,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -184,9 +187,16 @@ public class RobotContainer {
     ));
 
     // Score High
+    /*
     operatorController.y().onTrue(new ParallelCommandGroup(
       new InstantCommand(shoulder::scoreHigh, shoulder),
       new InstantCommand(wrist::scoreHigh)
+    ));
+    */
+    // TODO - TEST THIS, if it works get arm invovled next
+    operatorController.y().onTrue(new SequentialCommandGroup(
+      new ShoulderScoreHighCommand(shoulder),
+      new ShoulderScoreMidCommand(shoulder)
     ));
 
     // Pickup Above
