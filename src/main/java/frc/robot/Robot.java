@@ -52,6 +52,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.shoulder.setToZero();
     m_robotContainer.wrist.setToZero();
     m_robotContainer.arm.setToZero();
+    m_robotContainer.claw.setToZero();
   }
 
   @Override

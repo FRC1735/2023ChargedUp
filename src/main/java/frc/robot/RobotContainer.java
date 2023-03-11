@@ -68,7 +68,7 @@ public class RobotContainer {
   protected final Shoulder shoulder = new Shoulder();
   protected final Arm arm = new Arm();
   protected final Wrist wrist = new Wrist();
-  private final Claw claw = new Claw();
+  protected final Claw claw = new Claw();
 
   private final CommandXboxController driveController =
       new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -251,10 +251,16 @@ public class RobotContainer {
     */
 
     // Open Claw
-    operatorController.rightBumper().onTrue(new InstantCommand(claw::open, claw)).onFalse(new InstantCommand(claw::stop));
+    operatorController.rightBumper().onTrue(new InstantCommand(claw::open, claw));
 
-    // Close Claw
-    operatorController.rightTrigger().onTrue(new InstantCommand(claw::close, claw)).onFalse(new InstantCommand(claw::stop));
+    // Cone Claw
+    operatorController.rightTrigger().onTrue(new InstantCommand(claw::cone, claw));
+
+    // TODO - cube
+    //
+
+    // Manual Close Claw
+    // operatorController.rightTrigger().onTrue(new InstantCommand(claw::manualClose, claw)).onFalse(new InstantCommand(claw::stop));
 
     // Down Wrist
     operatorController.leftBumper().onTrue(new InstantCommand(wrist::down, wrist)).onFalse(new InstantCommand(wrist::stop, wrist));

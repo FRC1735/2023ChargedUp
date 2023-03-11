@@ -31,11 +31,8 @@ public class Wrist extends SubsystemBase {
     absoluteEncoder.setInverted(true);
     absoluteEncoder.setZeroOffset(0.5);
 
-    motor.setIdleMode(IdleMode.kBrake);
     pidController = motor.getPIDController();
     pidController.setFeedbackDevice(absoluteEncoder);
-
-    //pidController.setPositionPIDWrappingEnabled(false);
 
     pidController.setP(2);
     pidController.setI(0.004);

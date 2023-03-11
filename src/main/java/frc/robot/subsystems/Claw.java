@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
@@ -19,19 +20,26 @@ public class Claw extends SubsystemBase {
   CANSparkMax motor;
   
   private final double SPEED = 0.25;
+  private final double PID_SPEED = 0.25;
 
   private SparkMaxAbsoluteEncoder absoluteEncoder;
-  //private SparkMaxPIDController pidController;
-
-  // TODO: Implement encoder
-  // TODO: Implement encoder based limits
+  private SparkMaxPIDController pidController;
   
   /** Creates a new Claw. */
   public Claw() {
-    this.motor = new CANSparkMax(Constants.ClawConstants.canId, MotorType.kBrushless);
-    this.motor.setIdleMode(IdleMode.kBrake);
+    motor = new CANSparkMax(Constants.ClawConstants.canId, MotorType.kBrushless);
+    motor.setIdleMode(IdleMode.kBrake);
 
     absoluteEncoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
+  
+    pidController = motor.getPIDController();
+    pidController.setFeedbackDevice(absoluteEncoder);
+
+    pidController.setP(1);
+    pidController.setI(0);
+    pidController.setD(0);
+    pidController.setFF(0);
+    pidController.setOutputRange(-PID_SPEED, PID_SPEED);
   }
 
   @Override
@@ -42,15 +50,31 @@ public class Claw extends SubsystemBase {
     //SmartDashboard.putNumber("Claw Abs applied output", motor.getAppliedOutput());
   }
 
-  public void open() {
+  public void manualOpen() {
     motor.set(SPEED);
   }
 
-  public void close() {
+  public void manualClose() {
     motor.set(-SPEED);
   }
 
   public void stop() {
     motor.stopMotor();
+  }
+
+  public void open() {
+    pidController.setReference(0.63, ControlType.kPosition);
+  }
+
+  public void cone() {
+    pidController.setReference(0.73, ControlType.kPosition);
+  }
+
+  public void cube() {
+    pidController.setReference(0.67, ControlType.kPosition);
+  }
+
+  public void setToZero() {
+    motor.set(0);
   }
 }
