@@ -60,9 +60,9 @@ public class Shoulder extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Shoulder Encoder", absoluteEncoder.getPosition());
-    SmartDashboard.putNumber("Shoulder zero offset", absoluteEncoder.getZeroOffset());
-    SmartDashboard.putNumber("Shoulder Abs Velocity", absoluteEncoder.getVelocity());
-    SmartDashboard.putNumber("Shoulder Abs applied output", leftMotor.getAppliedOutput());
+    //SmartDashboard.putNumber("Shoulder zero offset", absoluteEncoder.getZeroOffset());
+    //SmartDashboard.putNumber("Shoulder Abs Velocity", absoluteEncoder.getVelocity());
+    //SmartDashboard.putNumber("Shoulder Abs applied output", leftMotor.getAppliedOutput());
   }
 
   public void manualControl(final double direction) {

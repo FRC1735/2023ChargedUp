@@ -53,9 +53,9 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("arm encoder", absoluteEncoder.getPosition());
-    SmartDashboard.putNumber("arm abs velocity", absoluteEncoder.getVelocity());
-    SmartDashboard.putNumber("arm applied output", motor.getAppliedOutput());
+    SmartDashboard.putNumber("Arm Encoder", absoluteEncoder.getPosition());
+    //SmartDashboard.putNumber("arm abs velocity", absoluteEncoder.getVelocity());
+    //SmartDashboard.putNumber("arm applied output", motor.getAppliedOutput());
   }
 
   public void in() {

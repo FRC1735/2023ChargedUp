@@ -37,10 +37,9 @@ public class Claw extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Claw Encoder", absoluteEncoder.getPosition());
-    SmartDashboard.putNumber("Claw zero offset", absoluteEncoder.getZeroOffset());
-    SmartDashboard.putNumber("Claw Abs Velocity", absoluteEncoder.getVelocity());
-    SmartDashboard.putNumber("Claw Abs applied output", motor.getAppliedOutput());
- 
+    //SmartDashboard.putNumber("Claw zero offset", absoluteEncoder.getZeroOffset());
+    //SmartDashboard.putNumber("Claw Abs Velocity", absoluteEncoder.getVelocity());
+    //SmartDashboard.putNumber("Claw Abs applied output", motor.getAppliedOutput());
   }
 
   public void open() {
