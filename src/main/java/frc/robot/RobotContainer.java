@@ -201,9 +201,9 @@ public class RobotContainer {
     // Pickup Front
     operatorController.x().onTrue(new SequentialCommandGroup(
       new ShoulderPickupFrontCommand(shoulder),
-      new WaitCommand(2),
+      new WaitCommand(0),
       new ArmPickupFrontCommand(arm),
-      new WaitCommand(2),
+      new WaitCommand(0),
       new InstantCommand(wrist::pickupFront)
     ));
 
@@ -259,8 +259,11 @@ public class RobotContainer {
     // TODO - cube
     //
 
+    // Manual Open Claw
+    //operatorController.rightBumper().onTrue(new InstantCommand(claw::manualOpen, claw)).onFalse(new InstantCommand(claw::stop));
+
     // Manual Close Claw
-    // operatorController.rightTrigger().onTrue(new InstantCommand(claw::manualClose, claw)).onFalse(new InstantCommand(claw::stop));
+    //operatorController.rightTrigger().onTrue(new InstantCommand(claw::manualClose, claw)).onFalse(new InstantCommand(claw::stop));
 
     // Down Wrist
     operatorController.leftBumper().onTrue(new InstantCommand(wrist::down, wrist)).onFalse(new InstantCommand(wrist::stop, wrist));

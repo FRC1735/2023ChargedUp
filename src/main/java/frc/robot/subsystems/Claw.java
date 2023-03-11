@@ -19,8 +19,8 @@ import frc.robot.Constants;
 public class Claw extends SubsystemBase {
   CANSparkMax motor;
   
-  private final double SPEED = 0.25;
-  private final double PID_SPEED = 0.25;
+  private final double SPEED = 1;
+  private final double PID_SPEED = 1;
 
   private SparkMaxAbsoluteEncoder absoluteEncoder;
   private SparkMaxPIDController pidController;
@@ -31,11 +31,12 @@ public class Claw extends SubsystemBase {
     motor.setIdleMode(IdleMode.kBrake);
 
     absoluteEncoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
+    absoluteEncoder.setInverted(true);
   
     pidController = motor.getPIDController();
     pidController.setFeedbackDevice(absoluteEncoder);
 
-    pidController.setP(1);
+    pidController.setP(2);
     pidController.setI(0);
     pidController.setD(0);
     pidController.setFF(0);
@@ -63,15 +64,15 @@ public class Claw extends SubsystemBase {
   }
 
   public void open() {
-    pidController.setReference(0.63, ControlType.kPosition);
+    pidController.setReference(0.36, ControlType.kPosition);
   }
 
   public void cone() {
-    pidController.setReference(0.73, ControlType.kPosition);
+    pidController.setReference(0.20, ControlType.kPosition);
   }
 
   public void cube() {
-    pidController.setReference(0.67, ControlType.kPosition);
+    pidController.setReference(0.33, ControlType.kPosition);
   }
 
   public void setToZero() {
