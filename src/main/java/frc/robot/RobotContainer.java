@@ -10,8 +10,18 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.arm.ArmHumanPlayerStationCommand;
+import frc.robot.commands.arm.ArmPickupAboveCommand;
+import frc.robot.commands.arm.ArmPickupFrontCommand;
+import frc.robot.commands.arm.ArmScoreHighCommand;
+import frc.robot.commands.arm.ArmScoreMidCommand;
+import frc.robot.commands.arm.ArmStorageCommand;
+import frc.robot.commands.shoulder.ShoulderHumanPlayerStationCommand;
+import frc.robot.commands.shoulder.ShoulderPickupAboveCommand;
+import frc.robot.commands.shoulder.ShoulderPickupFrontCommand;
 import frc.robot.commands.shoulder.ShoulderScoreHighCommand;
 import frc.robot.commands.shoulder.ShoulderScoreMidCommand;
+import frc.robot.commands.shoulder.ShoulderStorageCommand;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.ColorSensor;
@@ -171,46 +181,56 @@ public class RobotContainer {
 
   private void configureOperatorController() {
     // Storage
-    operatorController.a().onTrue(new ParallelCommandGroup(
-      //new InstantCommand(shoulder::storage),
+    operatorController.a().onTrue(new SequentialCommandGroup(
+      new ArmStorageCommand(arm),
+      new WaitCommand(2),
+      new ShoulderStorageCommand(shoulder),
+      new WaitCommand(2),
       new InstantCommand(wrist::storage)
     ));
 
     // Score Mid
-    operatorController.b().onTrue(new ParallelCommandGroup(
-      new InstantCommand(shoulder::scoreMid, shoulder),
+    operatorController.b().onTrue(new SequentialCommandGroup(
+      new ShoulderScoreMidCommand(shoulder),
+      new WaitCommand(2),
+      new ArmScoreMidCommand(arm),
+      new WaitCommand(2),
       new InstantCommand(wrist::scoreMid)
     ));
 
     // Pickup Front
-    operatorController.x().onTrue(new ParallelCommandGroup(
-      new InstantCommand(shoulder::pickupFront, shoulder),
+    operatorController.x().onTrue(new SequentialCommandGroup(
+      new ShoulderPickupFrontCommand(shoulder),
+      new WaitCommand(2),
+      new ArmPickupFrontCommand(arm),
+      new WaitCommand(2),
       new InstantCommand(wrist::pickupFront)
     ));
 
     // Score High
-    /*
-    operatorController.y().onTrue(new ParallelCommandGroup(
-      new InstantCommand(shoulder::scoreHigh, shoulder),
-      new InstantCommand(wrist::scoreHigh)
-    ));
-    */
-    // TODO - TEST THIS, if it works get arm invovled next
     operatorController.y().onTrue(new SequentialCommandGroup(
       new ShoulderScoreHighCommand(shoulder),
-      new WaitCommand(5),
-      new ShoulderScoreMidCommand(shoulder)
+      new WaitCommand(2),
+      new ArmScoreHighCommand(arm),
+      new WaitCommand(2),
+      new InstantCommand(wrist::scoreHigh)
     ));
 
     // Pickup Above
-    operatorController.start().onTrue(new ParallelCommandGroup(
-      new InstantCommand(shoulder::pickupAbove, shoulder),
+    operatorController.start().onTrue(new SequentialCommandGroup(
+      new ShoulderPickupAboveCommand(shoulder),
+      new WaitCommand(2),
+      new ArmPickupAboveCommand(arm),
+      new WaitCommand(2),
       new InstantCommand(wrist::pickupAbove)
     ));
 
     // Pickup Human Player Station
-    operatorController.back().onTrue(new ParallelCommandGroup(
-      new InstantCommand(shoulder::humanPlayerStation, shoulder),
+    operatorController.back().onTrue(new SequentialCommandGroup(
+      new ShoulderHumanPlayerStationCommand(shoulder),
+      new WaitCommand(2),
+      new ArmHumanPlayerStationCommand(arm),
+      new WaitCommand(2),
       new InstantCommand(wrist::humanPlayerStation)
     ));
 
