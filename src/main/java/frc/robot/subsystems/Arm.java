@@ -16,6 +16,7 @@ import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
+import frc.utils.Utils;
 
 public class Arm extends SubsystemBase {
   CANSparkMax motor;
@@ -25,6 +26,13 @@ public class Arm extends SubsystemBase {
 
   double OUT_LIMIT = 0.08;
   double IN_LIMIT = 0.933;
+
+  double SETPOINT_STORAGE = 0.94;
+  double SETPOINT_SCORE_MID = 0.71;
+  double SETPOINT_PICKUP_FRONT = 0.62;
+  double SETPOINT_SCORE_HIGH = 0.04;
+  double SETPOINT_PICKUP_ABOVE = 0.49;
+  double SETPOINT_HUMAN_PLAYER_STATION = 0.96;
 
   private SparkMaxAbsoluteEncoder absoluteEncoder;
   private SparkMaxPIDController pidController;
@@ -63,27 +71,51 @@ public class Arm extends SubsystemBase {
   }
 
   public void storage() {
-    pidController.setReference(0.94, CANSparkMax.ControlType.kPosition); 
+    pidController.setReference(SETPOINT_STORAGE, CANSparkMax.ControlType.kPosition); 
+  }
+
+  public boolean isAtStorage() {
+    return Utils.isCloseEnough(absoluteEncoder.getPosition(), SETPOINT_STORAGE);
   }
 
   public void scoreMid() {
-    pidController.setReference(0.71, CANSparkMax.ControlType.kPosition);
+    pidController.setReference(SETPOINT_SCORE_MID, CANSparkMax.ControlType.kPosition);
+  }
+
+  public boolean isAtScoreMid() {
+    return Utils.isCloseEnough(absoluteEncoder.getPosition(), SETPOINT_SCORE_MID);
   }
 
   public void pickupFront() {
-    pidController.setReference(0.62, CANSparkMax.ControlType.kPosition);
+    pidController.setReference(SETPOINT_PICKUP_FRONT, CANSparkMax.ControlType.kPosition);
+  }
+
+  public boolean isAtPickupFront() {
+    return Utils.isCloseEnough(absoluteEncoder.getPosition(), SETPOINT_PICKUP_FRONT);
   }
 
   public void scoreHigh() {
-    pidController.setReference(0.04, CANSparkMax.ControlType.kPosition);
+    pidController.setReference(SETPOINT_SCORE_HIGH, CANSparkMax.ControlType.kPosition);
+  }
+
+  public boolean isAtScoreHigh() {
+    return Utils.isCloseEnough(absoluteEncoder.getPosition(), SETPOINT_SCORE_HIGH);
   }
 
   public void pickupAbove() {
-    pidController.setReference(0.49, CANSparkMax.ControlType.kPosition);
+    pidController.setReference(SETPOINT_PICKUP_ABOVE, CANSparkMax.ControlType.kPosition);
+  }
+
+  public boolean isAtPickupAbove() {
+    return Utils.isCloseEnough(absoluteEncoder.getPosition(), SETPOINT_PICKUP_ABOVE);
   }
 
   public void humanPlayerStation() {
-    pidController.setReference(0.96, CANSparkMax.ControlType.kPosition);
+    pidController.setReference(SETPOINT_HUMAN_PLAYER_STATION, CANSparkMax.ControlType.kPosition);
+  }
+
+  public boolean isAtHumanPlayerStation() {
+    return Utils.isCloseEnough(absoluteEncoder.getPosition(), SETPOINT_HUMAN_PLAYER_STATION);
   }
 
   public void stop() {
