@@ -10,6 +10,7 @@ import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxAlternateEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
@@ -29,7 +30,7 @@ public class Arm extends SubsystemBase {
 
   double SETPOINT_STORAGE = 0.94;
   double SETPOINT_SCORE_MID = 0.71;
-  double SETPOINT_PICKUP_FRONT = 0.62;
+  double SETPOINT_PICKUP_FRONT = 0.94;
   double SETPOINT_SCORE_HIGH = 0.04;
   double SETPOINT_PICKUP_ABOVE = 0.49;
   double SETPOINT_HUMAN_PLAYER_STATION = 0.96;
@@ -40,9 +41,11 @@ public class Arm extends SubsystemBase {
   /** Creates a new Arm. */
   public Arm() {
     this.motor = new CANSparkMax(ArmConstants.canId, MotorType.kBrushless);
+    motor.setIdleMode(IdleMode.kBrake);
     absoluteEncoder = this.motor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
     pidController = this.motor.getPIDController();
     pidController.setFeedbackDevice(absoluteEncoder);
+    pidController.setPositionPIDWrappingEnabled(false);
 
     pidController.setP(1.5);
     pidController.setI(0);

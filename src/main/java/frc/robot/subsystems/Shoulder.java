@@ -27,10 +27,10 @@ public class Shoulder extends SubsystemBase {
 
   public double SETPOINT_STORAGE = 0.96;
   public double SETPOINT_SCORE_MID = 0.28;
-  public double SETPOINT_PICKUP_FRONT = 0.75;
-  public double SETPOINT_SCORE_HIGH = 0.24;
+  public double SETPOINT_PICKUP_FRONT = 0.8;
+  public double SETPOINT_SCORE_HIGH = 0.2;
   public double SETPOINT_PICKUP_ABOVE = 0.7;
-  public double SETPOINT_HUMAN_PLAYER_STATION = 0.25;
+  public double SETPOINT_HUMAN_PLAYER_STATION = 0.18;
 
 
   /** Creates a new Shoulder. */
@@ -47,9 +47,11 @@ public class Shoulder extends SubsystemBase {
 
     pidController.setP(1);
     pidController.setI(0);
-    pidController.setD(0);
+    pidController.setD(0.1);
     pidController.setFF(0);
     pidController.setOutputRange(-PID_SPEED, PID_SPEED);
+
+    pidController.setPositionPIDWrappingEnabled(false);
 
     rightMotor.setIdleMode(IdleMode.kBrake);
     rightMotor.follow(leftMotor, true);

@@ -68,7 +68,7 @@ public class Claw extends SubsystemBase {
   }
 
   public void cone() {
-    pidController.setReference(0.20, ControlType.kPosition);
+    pidController.setReference(0.15, ControlType.kPosition);
   }
 
   public void cube() {

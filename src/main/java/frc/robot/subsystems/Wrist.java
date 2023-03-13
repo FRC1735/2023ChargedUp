@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
@@ -18,7 +19,7 @@ import frc.robot.Constants;
 public class Wrist extends SubsystemBase {
   private CANSparkMax motor;
   private final double SPEED = 0.1;
-  private final double PID_SPEED = 0.8;
+  private final double PID_SPEED = 0.6;
   private SparkMaxAbsoluteEncoder absoluteEncoder;
   private SparkMaxPIDController pidController;
 
@@ -35,7 +36,7 @@ public class Wrist extends SubsystemBase {
     pidController.setFeedbackDevice(absoluteEncoder);
 
     pidController.setP(2);
-    pidController.setI(0.004);
+    pidController.setI(0.0);
     pidController.setD(0);
     pidController.setFF(0);
     pidController.setOutputRange(-PID_SPEED, PID_SPEED);
@@ -72,11 +73,11 @@ public class Wrist extends SubsystemBase {
   }
 
   public void pickupFront() {
-    pidController.setReference(0.71, CANSparkMax.ControlType.kPosition);
+    pidController.setReference(0.69, CANSparkMax.ControlType.kPosition);
   }
 
   public void scoreHigh() {
-    pidController.setReference(0.81, CANSparkMax.ControlType.kPosition);
+    pidController.setReference(0.75, CANSparkMax.ControlType.kPosition);
   }
 
   public void pickupAbove() {
@@ -84,7 +85,7 @@ public class Wrist extends SubsystemBase {
   }
 
   public void humanPlayerStation() {
-    pidController.setReference(0.91, CANSparkMax.ControlType.kPosition);
+    pidController.setReference(0.88, CANSparkMax.ControlType.kPosition);
   }
 
   public void setToZero() {

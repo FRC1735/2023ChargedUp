@@ -89,6 +89,10 @@ public class RobotContainer {
     configureDriveController();
     configureOperatorController();
 
+    //new InstantCommand(claw::cone, claw);
+
+    
+
     // TODO - for both autonomous and teleop - start in storage mode
   }
 
@@ -177,16 +181,30 @@ public class RobotContainer {
 
       // Apply speed modifier, that is slow down when left bumper held
       driveController.leftBumper().onTrue(new InstantCommand( () -> driveSpeedModifier = SPEED_MODIFIER)).onFalse(new InstantCommand(() -> driveSpeedModifier = FULL_SPEED));
+  
+          // Storage
+
+    /*driveController.a().onTrue(new SequentialCommandGroup(
+      new InstantCommand(claw::cone, claw),
+      new WaitCommand(1),
+      new ArmStorageCommand(arm),
+      new WaitCommand(1),
+      new InstantCommand(wrist::storage),
+      new WaitCommand(1),
+      new ShoulderStorageCommand(shoulder)
+    ));*/
+  
   }
 
   private void configureOperatorController() {
     // Storage
     operatorController.a().onTrue(new SequentialCommandGroup(
       new ArmStorageCommand(arm),
-      new WaitCommand(2),
-      new ShoulderStorageCommand(shoulder),
-      new WaitCommand(2),
-      new InstantCommand(wrist::storage)
+      new InstantCommand(arm::stop, arm),
+      new WaitCommand(0),
+      new InstantCommand(wrist::storage),
+      new WaitCommand(0),
+      new ShoulderStorageCommand(shoulder)
     ));
 
     // Score Mid
@@ -210,9 +228,9 @@ public class RobotContainer {
     // Score High
     operatorController.y().onTrue(new SequentialCommandGroup(
       new ShoulderScoreHighCommand(shoulder),
-      new WaitCommand(2),
+      new WaitCommand(0),
       new ArmScoreHighCommand(arm),
-      new WaitCommand(2),
+      new WaitCommand(0),
       new InstantCommand(wrist::scoreHigh)
     ));
 
@@ -228,9 +246,9 @@ public class RobotContainer {
     // Pickup Human Player Station
     operatorController.back().onTrue(new SequentialCommandGroup(
       new ShoulderHumanPlayerStationCommand(shoulder),
-      new WaitCommand(2),
+      new WaitCommand(0),
       new ArmHumanPlayerStationCommand(arm),
-      new WaitCommand(2),
+      new WaitCommand(0),
       new InstantCommand(wrist::humanPlayerStation)
     ));
 
