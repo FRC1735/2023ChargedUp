@@ -69,6 +69,11 @@ public class DriveSubsystem extends SubsystemBase {
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
+    m_gyro.setAngleAdjustment(180);
+  }
+
+  public void flipGyro() {
+    m_gyro.setAngleAdjustment(180);
   }
 
   @Override

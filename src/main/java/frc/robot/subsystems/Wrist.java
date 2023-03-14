@@ -18,8 +18,8 @@ import frc.robot.Constants;
 
 public class Wrist extends SubsystemBase {
   private CANSparkMax motor;
-  private final double SPEED = 0.1;
-  private final double PID_SPEED = 0.6;
+  private final double SPEED = 1;
+  private final double PID_SPEED = 0.8;
   private SparkMaxAbsoluteEncoder absoluteEncoder;
   private SparkMaxPIDController pidController;
 

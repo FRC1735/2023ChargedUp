@@ -28,10 +28,10 @@ public class Arm extends SubsystemBase {
   double OUT_LIMIT = 0.08;
   double IN_LIMIT = 0.933;
 
-  double SETPOINT_STORAGE = 0.94;
-  double SETPOINT_SCORE_MID = 0.71;
+  double SETPOINT_STORAGE = 0.95;
+  double SETPOINT_SCORE_MID = 0.95;
   double SETPOINT_PICKUP_FRONT = 0.94;
-  double SETPOINT_SCORE_HIGH = 0.04;
+  double SETPOINT_SCORE_HIGH = 0.28;
   double SETPOINT_PICKUP_ABOVE = 0.49;
   double SETPOINT_HUMAN_PLAYER_STATION = 0.96;
 

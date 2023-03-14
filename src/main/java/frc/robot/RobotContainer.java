@@ -210,18 +210,19 @@ public class RobotContainer {
     // Score Mid
     operatorController.b().onTrue(new SequentialCommandGroup(
       new ShoulderScoreMidCommand(shoulder),
-      new WaitCommand(2),
-      new ArmScoreMidCommand(arm),
-      new WaitCommand(2),
-      new InstantCommand(wrist::scoreMid)
+      new WaitCommand(0),
+      new InstantCommand(wrist::scoreMid),
+      new WaitCommand(0),
+      new ArmScoreMidCommand(arm)
+
     ));
 
     // Pickup Front
     operatorController.x().onTrue(new SequentialCommandGroup(
       new ShoulderPickupFrontCommand(shoulder),
-      new WaitCommand(0),
+      new WaitCommand(2.0),
       new ArmPickupFrontCommand(arm),
-      new WaitCommand(0),
+      new WaitCommand(2.0),
       new InstantCommand(wrist::pickupFront)
     ));
 
@@ -229,9 +230,10 @@ public class RobotContainer {
     operatorController.y().onTrue(new SequentialCommandGroup(
       new ShoulderScoreHighCommand(shoulder),
       new WaitCommand(0),
-      new ArmScoreHighCommand(arm),
+      new InstantCommand(wrist::scoreHigh),
       new WaitCommand(0),
-      new InstantCommand(wrist::scoreHigh)
+      new ArmScoreHighCommand(arm)
+
     ));
 
     // Pickup Above
@@ -302,10 +304,9 @@ public class RobotContainer {
     Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
         // Start at the origin facing the +X direction
         new Pose2d(0, 0, new Rotation2d(0)),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+        List.of(new Translation2d(0.25, 0), new Translation2d(0.5, 0)),
         // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(3, 0, new Rotation2d(0)),
+        new Pose2d(0.6, 0, new Rotation2d(0)),
         config);
 
     var thetaController = new ProfiledPIDController(
@@ -328,6 +329,11 @@ public class RobotContainer {
     drive.resetOdometry(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> drive.drive(0, 0, 0, false, false));
+    return
+    new InstantCommand(drive::zeroHeading, drive)
+    .andThen(new InstantCommand(drive::flipGyro, drive))
+    .andThen(swerveControllerCommand)
+    .andThen(() -> drive.drive(0, 0, 0, false, false))
+    .andThen();
   }
 }

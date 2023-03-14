@@ -26,7 +26,7 @@ public class Shoulder extends SubsystemBase {
   private SparkMaxPIDController pidController;
 
   public double SETPOINT_STORAGE = 0.96;
-  public double SETPOINT_SCORE_MID = 0.28;
+  public double SETPOINT_SCORE_MID = 0.24;
   public double SETPOINT_PICKUP_FRONT = 0.8;
   public double SETPOINT_SCORE_HIGH = 0.2;
   public double SETPOINT_PICKUP_ABOVE = 0.7;
@@ -45,9 +45,9 @@ public class Shoulder extends SubsystemBase {
     pidController = leftMotor.getPIDController();
     pidController.setFeedbackDevice(absoluteEncoder);
 
-    pidController.setP(1);
+    pidController.setP(1.2);
     pidController.setI(0);
-    pidController.setD(0.1);
+    pidController.setD(0.2);
     pidController.setFF(0);
     pidController.setOutputRange(-PID_SPEED, PID_SPEED);
 
