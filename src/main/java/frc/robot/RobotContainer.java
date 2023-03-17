@@ -94,7 +94,8 @@ public class RobotContainer {
 
     //new InstantCommand(claw::cone, claw);
 
-    autoChooser.setDefaultOption("Score High, Back Up", autonomousDropConeAtHighThenMoveBack);
+    autoChooser.setDefaultOption("Do Nothing", autonomousDoNothingCommand);
+    autoChooser.addOption("Score High, Back Up", autonomousDropConeAtHighThenMoveBack);
     autoChooser.addOption("Score High", autonomousDropConeAtHigh);
     autoChooser.addOption("Back Up", autonomousGoBackCommand);
     SmartDashboard.putData(autoChooser);
@@ -367,7 +368,7 @@ public class RobotContainer {
       ),
       // drive back
       new InstantCommand(drive::zeroHeading, drive),
-      new RunCommand(() -> drive.drive(0.5, 0, 0, true, true), drive).withTimeout(1)
+      new RunCommand(() -> drive.drive(0.5, 0, 0, true, true), drive).withTimeout(1.3)
     );
 
 
@@ -376,6 +377,8 @@ public class RobotContainer {
       new InstantCommand(drive::zeroHeading, drive),
       new RunCommand(() -> drive.drive(0.5, 0, 0, true, true), drive).withTimeout(1)
   );
+
+  Command autonomousDoNothingCommand = new WaitCommand(1);
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
