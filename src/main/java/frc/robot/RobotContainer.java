@@ -16,6 +16,8 @@ import frc.robot.commands.arm.ArmPickupFrontCommand;
 import frc.robot.commands.arm.ArmScoreHighCommand;
 import frc.robot.commands.arm.ArmScoreMidCommand;
 import frc.robot.commands.arm.ArmStorageCommand;
+import frc.robot.commands.combos.ScoreHigh;
+import frc.robot.commands.combos.Storage;
 import frc.robot.commands.shoulder.ShoulderHumanPlayerStationCommand;
 import frc.robot.commands.shoulder.ShoulderPickupAboveCommand;
 import frc.robot.commands.shoulder.ShoulderPickupFrontCommand;
@@ -72,6 +74,9 @@ public class RobotContainer {
   protected final Wrist wrist = new Wrist();
   protected final Claw claw = new Claw();
 
+  final Storage storage = new Storage(arm, wrist, shoulder);
+  final ScoreHigh scoreHigh = new ScoreHigh(shoulder, wrist, arm);
+
   private final CommandXboxController driveController =
       new CommandXboxController(OIConstants.kDriverControllerPort);
   
@@ -101,11 +106,15 @@ public class RobotContainer {
     autoChooser.addOption("Back Up", autonomousGoBackCommand);
     SmartDashboard.putData(autoChooser);
 
-    //SmartDashboard.putData(CommandScheduler.getInstance());
-    SmartDashboard.putData(shoulder);
-    SmartDashboard.putData(claw);
-    SmartDashboard.putData(wrist);
-    SmartDashboard.putData(arm);
+
+    //SmartDashboard.putData(scoreHigh);
+
+    SmartDashboard.putData(CommandScheduler.getInstance());
+    
+    //SmartDashboard.putData(shoulder);
+    //SmartDashboard.putData(claw);
+    //SmartDashboard.putData(wrist);
+    //SmartDashboard.putData(arm);
 
     // TODO - for both autonomous and teleop - start in storage mode
   }
@@ -212,14 +221,7 @@ public class RobotContainer {
 
   private void configureOperatorController() {
     // Storage
-    operatorController.a().onTrue(new SequentialCommandGroup(
-      new ArmStorageCommand(arm),
-      new InstantCommand(arm::stop, arm),
-      new WaitCommand(0),
-      new InstantCommand(wrist::storage),
-      new WaitCommand(0),
-      new ShoulderStorageCommand(shoulder)
-    ));
+    operatorController.a().onTrue(storage);
 
     // Score Mid
     operatorController.b().onTrue(new SequentialCommandGroup(
@@ -241,14 +243,7 @@ public class RobotContainer {
     ));
 
     // Score High
-    operatorController.y().onTrue(new SequentialCommandGroup(
-      new ShoulderScoreHighCommand(shoulder),
-      new WaitCommand(0),
-      new InstantCommand(wrist::scoreHigh),
-      new WaitCommand(0),
-      new ArmScoreHighCommand(arm)
-
-    ));
+    operatorController.y().onTrue(scoreHigh);
 
     // Pickup Above
     operatorController.start().onTrue(new SequentialCommandGroup(
