@@ -47,6 +47,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
@@ -100,6 +101,11 @@ public class RobotContainer {
     autoChooser.addOption("Back Up", autonomousGoBackCommand);
     SmartDashboard.putData(autoChooser);
 
+    //SmartDashboard.putData(CommandScheduler.getInstance());
+    SmartDashboard.putData(shoulder);
+    SmartDashboard.putData(claw);
+    SmartDashboard.putData(wrist);
+    SmartDashboard.putData(arm);
 
     // TODO - for both autonomous and teleop - start in storage mode
   }
@@ -228,9 +234,9 @@ public class RobotContainer {
     // Pickup Front
     operatorController.x().onTrue(new SequentialCommandGroup(
       new ShoulderPickupFrontCommand(shoulder),
-      new WaitCommand(2.0),
+      new WaitCommand(0),
       new ArmPickupFrontCommand(arm),
-      new WaitCommand(2.0),
+      new WaitCommand(0),
       new InstantCommand(wrist::pickupFront)
     ));
 
@@ -368,14 +374,14 @@ public class RobotContainer {
       ),
       // drive back
       new InstantCommand(drive::zeroHeading, drive),
-      new RunCommand(() -> drive.drive(0.5, 0, 0, true, true), drive).withTimeout(1.3)
+      new RunCommand(() -> drive.drive(0.5, 0, 0, true, true), drive).withTimeout(1.6)
     );
 
 
   // TODO - BAD!
  Command autonomousGoBackCommand = new SequentialCommandGroup(
       new InstantCommand(drive::zeroHeading, drive),
-      new RunCommand(() -> drive.drive(0.5, 0, 0, true, true), drive).withTimeout(1)
+      new RunCommand(() -> drive.drive(0.5, 0, 0, true, true), drive).withTimeout(1.6)
   );
 
   Command autonomousDoNothingCommand = new WaitCommand(1);

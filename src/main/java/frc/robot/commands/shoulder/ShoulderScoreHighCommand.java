@@ -14,6 +14,7 @@ public class ShoulderScoreHighCommand extends CommandBase {
 
   @Override
   public void initialize() {
+    //reachedSetpoint = 0;
     shoulder.scoreHigh();
   }
 
