@@ -73,7 +73,7 @@ public class Wrist extends SubsystemBase {
   }
 
   public void pickupFront() {
-    pidController.setReference(0.69, CANSparkMax.ControlType.kPosition);
+    pidController.setReference(0.68, CANSparkMax.ControlType.kPosition);
   }
 
   public void scoreHigh() {

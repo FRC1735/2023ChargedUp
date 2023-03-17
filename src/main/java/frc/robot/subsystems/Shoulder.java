@@ -27,7 +27,7 @@ public class Shoulder extends SubsystemBase {
 
   public double SETPOINT_STORAGE = 0.96;
   public double SETPOINT_SCORE_MID = 0.24;
-  public double SETPOINT_PICKUP_FRONT = 0.8;
+  public double SETPOINT_PICKUP_FRONT = 0.79;
   public double SETPOINT_SCORE_HIGH = 0.2;
   public double SETPOINT_PICKUP_ABOVE = 0.7;
   public double SETPOINT_HUMAN_PLAYER_STATION = 0.18;

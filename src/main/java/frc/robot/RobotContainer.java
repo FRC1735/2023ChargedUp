@@ -36,6 +36,7 @@ import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.I2C.Port;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -76,6 +77,8 @@ public class RobotContainer {
   private final CommandXboxController operatorController = 
       new CommandXboxController(OIConstants.kOperatorControllerPort);
 
+  SendableChooser<Command> autoChooser = new SendableChooser<>();
+
   // Possibly causing issues and we are not using currently
   // See "Onboard I2C Causing System Lockups" at
   // https://docs.wpilib.org/en/stable/docs/yearly-overview/known-issues.html
@@ -91,7 +94,11 @@ public class RobotContainer {
 
     //new InstantCommand(claw::cone, claw);
 
-    
+    autoChooser.setDefaultOption("Score High, Back Up", autonomousDropConeAtHighThenMoveBack);
+    autoChooser.addOption("Score High", autonomousDropConeAtHigh);
+    autoChooser.addOption("Back Up", autonomousGoBackCommand);
+    SmartDashboard.putData(autoChooser);
+
 
     // TODO - for both autonomous and teleop - start in storage mode
   }
@@ -292,7 +299,87 @@ public class RobotContainer {
     operatorController.leftTrigger().onTrue(new InstantCommand(wrist::up, wrist)).onFalse(new InstantCommand(wrist::stop, wrist));
   }
 
+  Command autonomousDropConeAtHigh = new SequentialCommandGroup(
+    // close claw
+    new InstantCommand(claw::cone, claw),
+    // storage mode
+    new SequentialCommandGroup(
+      new ArmStorageCommand(arm),
+      new InstantCommand(arm::stop, arm),
+      new WaitCommand(0),
+      new InstantCommand(wrist::storage),
+      new WaitCommand(0),
+      new ShoulderStorageCommand(shoulder)
+    ),
+    // score high
+    new SequentialCommandGroup(
+      new ShoulderScoreHighCommand(shoulder),
+      new WaitCommand(0),
+      new InstantCommand(wrist::scoreHigh),
+      new WaitCommand(0),
+      new ArmScoreHighCommand(arm)
+    ),
+    // release cone
+    new InstantCommand(claw::open, claw),
+    new WaitCommand(1),
+    // storage
+    new SequentialCommandGroup(
+      new ArmStorageCommand(arm),
+      new InstantCommand(arm::stop, arm),
+      new WaitCommand(0),
+      new InstantCommand(wrist::storage),
+      new WaitCommand(0),
+      new ShoulderStorageCommand(shoulder)
+    )
+  );
+
+  public Command autonomousDropConeAtHighThenMoveBack = new SequentialCommandGroup(
+      // close claw
+      new InstantCommand(claw::cone, claw),
+      // storage mode
+      new SequentialCommandGroup(
+        new ArmStorageCommand(arm),
+        new InstantCommand(arm::stop, arm),
+        new WaitCommand(0),
+        new InstantCommand(wrist::storage),
+        new WaitCommand(0),
+        new ShoulderStorageCommand(shoulder)
+      ),
+      // score high
+      new SequentialCommandGroup(
+        new ShoulderScoreHighCommand(shoulder),
+        new WaitCommand(0),
+        new InstantCommand(wrist::scoreHigh),
+        new WaitCommand(0),
+        new ArmScoreHighCommand(arm)
+      ),
+      // release cone
+      new InstantCommand(claw::open, claw),
+      new WaitCommand(1),
+      // storage
+      new SequentialCommandGroup(
+        new ArmStorageCommand(arm),
+        new InstantCommand(arm::stop, arm),
+        new WaitCommand(0),
+        new InstantCommand(wrist::storage),
+        new WaitCommand(0),
+        new ShoulderStorageCommand(shoulder)
+      ),
+      // drive back
+      new InstantCommand(drive::zeroHeading, drive),
+      new RunCommand(() -> drive.drive(0.5, 0, 0, true, true), drive).withTimeout(1)
+    );
+
+
+  // TODO - BAD!
+ Command autonomousGoBackCommand = new SequentialCommandGroup(
+      new InstantCommand(drive::zeroHeading, drive),
+      new RunCommand(() -> drive.drive(0.5, 0, 0, true, true), drive).withTimeout(1)
+  );
+
   public Command getAutonomousCommand() {
+    return autoChooser.getSelected();
+    /*
     // Create config for trajectory
     TrajectoryConfig config = new TrajectoryConfig(
         AutoConstants.kMaxSpeedMetersPerSecond,
@@ -335,5 +422,6 @@ public class RobotContainer {
     .andThen(swerveControllerCommand)
     .andThen(() -> drive.drive(0, 0, 0, false, false))
     .andThen();
+    */
   }
 }
