@@ -74,8 +74,8 @@ public class RobotContainer {
   protected final Wrist wrist = new Wrist();
   protected final Claw claw = new Claw();
 
-  final Storage storage = new Storage(arm, wrist, shoulder);
-  final ScoreHigh scoreHigh = new ScoreHigh(shoulder, wrist, arm);
+  public final Storage storage = new Storage(arm, wrist, shoulder);
+  public final ScoreHigh scoreHigh = new ScoreHigh(shoulder, wrist, arm);
 
   private final CommandXboxController driveController =
       new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -109,7 +109,7 @@ public class RobotContainer {
 
     //SmartDashboard.putData(scoreHigh);
 
-    SmartDashboard.putData(CommandScheduler.getInstance());
+    //SmartDashboard.putData(CommandScheduler.getInstance());
     
     //SmartDashboard.putData(shoulder);
     //SmartDashboard.putData(claw);
@@ -230,7 +230,6 @@ public class RobotContainer {
       new InstantCommand(wrist::scoreMid),
       new WaitCommand(0),
       new ArmScoreMidCommand(arm)
-
     ));
 
     // Pickup Front
@@ -269,6 +268,9 @@ public class RobotContainer {
 
     // Retract Arm
     operatorController.povDown().onTrue(new InstantCommand(arm::in, arm)).onFalse(new InstantCommand(arm::stop, arm));
+
+    // Cancel storage command
+    operatorController.povRight().onTrue(new InstantCommand(() -> scoreHigh.cancel()));
 
     // Move shoulder up and down
     // TODO: When this is on it interferes with PID control
@@ -369,14 +371,14 @@ public class RobotContainer {
       ),
       // drive back
       new InstantCommand(drive::zeroHeading, drive),
-      new RunCommand(() -> drive.drive(0.5, 0, 0, true, true), drive).withTimeout(1.6)
+      new RunCommand(() -> drive.drive(0.5, 0, 0, true, true), drive).withTimeout(1.8)
     );
 
 
   // TODO - BAD!
  Command autonomousGoBackCommand = new SequentialCommandGroup(
       new InstantCommand(drive::zeroHeading, drive),
-      new RunCommand(() -> drive.drive(0.5, 0, 0, true, true), drive).withTimeout(1.6)
+      new RunCommand(() -> drive.drive(0.5, 0, 0, true, true), drive).withTimeout(1.8)
   );
 
   Command autonomousDoNothingCommand = new WaitCommand(1);
