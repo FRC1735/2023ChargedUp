@@ -283,9 +283,14 @@ public class RobotContainer {
 
     // Open Claw
     operatorController.rightBumper().onTrue(new InstantCommand(claw::open, claw));
+    //operatorController.rightBumper().onTrue(new InstantCommand(claw::manualOpen, claw));
+
 
     // Cone Claw
     operatorController.rightTrigger().onTrue(new InstantCommand(claw::cone, claw));
+    //operatorController.rightTrigger().onTrue(new InstantCommand(claw::cone, claw));
+
+
 
     // TODO - cube
     //
