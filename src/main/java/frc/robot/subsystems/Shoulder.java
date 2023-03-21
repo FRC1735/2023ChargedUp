@@ -29,8 +29,8 @@ public class Shoulder extends SubsystemBase {
   public double SETPOINT_SCORE_MID = 0.24;
   public double SETPOINT_PICKUP_FRONT = 0.79;
   public double SETPOINT_SCORE_HIGH = 0.2;
-  public double SETPOINT_PICKUP_ABOVE = 0.7;
-  public double SETPOINT_HUMAN_PLAYER_STATION = 0.18;
+  public double SETPOINT_PICKUP_ABOVE = 0.68;
+  public double SETPOINT_HUMAN_PLAYER_STATION = 0.24;
 
 
   /** Creates a new Shoulder. */
@@ -143,6 +143,12 @@ public class Shoulder extends SubsystemBase {
   public boolean isAtHumanPlayerStation() {
     return Utils.isCloseEnough(absoluteEncoder.getPosition(), SETPOINT_HUMAN_PLAYER_STATION);
   }
+
+  /*
+  public void adjustReferencePoint() {
+    double currentPosition = absoluteEncoder.getPosition();
+  }
+  */
 
   public void setToZero() {
     leftMotor.set(0);

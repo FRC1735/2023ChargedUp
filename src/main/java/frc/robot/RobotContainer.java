@@ -16,6 +16,8 @@ import frc.robot.commands.arm.ArmPickupFrontCommand;
 import frc.robot.commands.arm.ArmScoreHighCommand;
 import frc.robot.commands.arm.ArmScoreMidCommand;
 import frc.robot.commands.arm.ArmStorageCommand;
+import frc.robot.commands.combos.ScoreHigh;
+import frc.robot.commands.combos.Storage;
 import frc.robot.commands.shoulder.ShoulderHumanPlayerStationCommand;
 import frc.robot.commands.shoulder.ShoulderPickupAboveCommand;
 import frc.robot.commands.shoulder.ShoulderPickupFrontCommand;
@@ -47,6 +49,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
@@ -71,6 +74,9 @@ public class RobotContainer {
   protected final Wrist wrist = new Wrist();
   protected final Claw claw = new Claw();
 
+  public final Storage storage = new Storage(arm, wrist, shoulder);
+  public final ScoreHigh scoreHigh = new ScoreHigh(shoulder, wrist, arm);
+
   private final CommandXboxController driveController =
       new CommandXboxController(OIConstants.kDriverControllerPort);
   
@@ -94,11 +100,21 @@ public class RobotContainer {
 
     //new InstantCommand(claw::cone, claw);
 
-    autoChooser.setDefaultOption("Score High, Back Up", autonomousDropConeAtHighThenMoveBack);
+    autoChooser.setDefaultOption("Do Nothing", autonomousDoNothingCommand);
+    autoChooser.addOption("Score High, Back Up", autonomousDropConeAtHighThenMoveBack);
     autoChooser.addOption("Score High", autonomousDropConeAtHigh);
     autoChooser.addOption("Back Up", autonomousGoBackCommand);
     SmartDashboard.putData(autoChooser);
 
+
+    //SmartDashboard.putData(scoreHigh);
+
+    //SmartDashboard.putData(CommandScheduler.getInstance());
+    
+    //SmartDashboard.putData(shoulder);
+    //SmartDashboard.putData(claw);
+    //SmartDashboard.putData(wrist);
+    //SmartDashboard.putData(arm);
 
     // TODO - for both autonomous and teleop - start in storage mode
   }
@@ -205,14 +221,7 @@ public class RobotContainer {
 
   private void configureOperatorController() {
     // Storage
-    operatorController.a().onTrue(new SequentialCommandGroup(
-      new ArmStorageCommand(arm),
-      new InstantCommand(arm::stop, arm),
-      new WaitCommand(0),
-      new InstantCommand(wrist::storage),
-      new WaitCommand(0),
-      new ShoulderStorageCommand(shoulder)
-    ));
+    operatorController.a().onTrue(storage);
 
     // Score Mid
     operatorController.b().onTrue(new SequentialCommandGroup(
@@ -221,27 +230,19 @@ public class RobotContainer {
       new InstantCommand(wrist::scoreMid),
       new WaitCommand(0),
       new ArmScoreMidCommand(arm)
-
     ));
 
     // Pickup Front
     operatorController.x().onTrue(new SequentialCommandGroup(
       new ShoulderPickupFrontCommand(shoulder),
-      new WaitCommand(2.0),
+      new WaitCommand(0),
       new ArmPickupFrontCommand(arm),
-      new WaitCommand(2.0),
+      new WaitCommand(0),
       new InstantCommand(wrist::pickupFront)
     ));
 
     // Score High
-    operatorController.y().onTrue(new SequentialCommandGroup(
-      new ShoulderScoreHighCommand(shoulder),
-      new WaitCommand(0),
-      new InstantCommand(wrist::scoreHigh),
-      new WaitCommand(0),
-      new ArmScoreHighCommand(arm)
-
-    ));
+    operatorController.y().onTrue(scoreHigh);
 
     // Pickup Above
     operatorController.start().onTrue(new SequentialCommandGroup(
@@ -268,6 +269,9 @@ public class RobotContainer {
     // Retract Arm
     operatorController.povDown().onTrue(new InstantCommand(arm::in, arm)).onFalse(new InstantCommand(arm::stop, arm));
 
+    // Cancel storage command
+    operatorController.povRight().onTrue(new InstantCommand(() -> scoreHigh.cancel()));
+
     // Move shoulder up and down
     // TODO: When this is on it interferes with PID control
     /*
@@ -279,9 +283,14 @@ public class RobotContainer {
 
     // Open Claw
     operatorController.rightBumper().onTrue(new InstantCommand(claw::open, claw));
+    //operatorController.rightBumper().onTrue(new InstantCommand(claw::manualOpen, claw));
+
 
     // Cone Claw
     operatorController.rightTrigger().onTrue(new InstantCommand(claw::cone, claw));
+    //operatorController.rightTrigger().onTrue(new InstantCommand(claw::cone, claw));
+
+
 
     // TODO - cube
     //
@@ -367,15 +376,17 @@ public class RobotContainer {
       ),
       // drive back
       new InstantCommand(drive::zeroHeading, drive),
-      new RunCommand(() -> drive.drive(0.5, 0, 0, true, true), drive).withTimeout(1)
+      new RunCommand(() -> drive.drive(0.5, 0, 0, true, true), drive).withTimeout(1.8)
     );
 
 
   // TODO - BAD!
  Command autonomousGoBackCommand = new SequentialCommandGroup(
       new InstantCommand(drive::zeroHeading, drive),
-      new RunCommand(() -> drive.drive(0.5, 0, 0, true, true), drive).withTimeout(1)
+      new RunCommand(() -> drive.drive(0.5, 0, 0, true, true), drive).withTimeout(1.8)
   );
+
+  Command autonomousDoNothingCommand = new WaitCommand(1);
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
