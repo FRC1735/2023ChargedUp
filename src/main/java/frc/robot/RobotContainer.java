@@ -32,8 +32,15 @@ import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Shoulder;
 import frc.robot.subsystems.Wrist;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.math.MathUtil;
@@ -384,50 +391,36 @@ public class RobotContainer {
   Command autonomousDoNothingCommand = new WaitCommand(1);
 
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
-    /*
-    // Create config for trajectory
-    TrajectoryConfig config = new TrajectoryConfig(
-        AutoConstants.kMaxSpeedMetersPerSecond,
-        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-        // Add kinematics to ensure max speed is actually obeyed
-        .setKinematics(DriveConstants.kDriveKinematics);
+    //return autoChooser.getSelected(); // JTA / TODO - revive and put below into a standalone command
 
-    // An example trajectory to follow. All units in meters.
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0)),
-        List.of(new Translation2d(0.25, 0), new Translation2d(0.5, 0)),
-        // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(0.6, 0, new Rotation2d(0)),
-        config);
+    // This will load the file "FullAuto.path" and generate it with a max velocity of 4 m/s and a max acceleration of 3 m/s^2
+    // for every path in the group
+    // JTA / TODO - don't get why this cast is needed
+    ArrayList<PathPlannerTrajectory> pathGroup = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("Left", new PathConstraints(4, 3));
 
-    var thetaController = new ProfiledPIDController(
-        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    // This is just an example event map. It would be better to have a constant, global event map
+    // in your code that will be used by all path following commands.
+    // JTA / TODO - utilize this
+    HashMap<String, Command> eventMap = new HashMap<>();
+    eventMap.put("marker1", new PrintCommand("Passed marker 1"));
+    //eventMap.put("intakeDown", new IntakeDown());
 
-    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-        exampleTrajectory,
-        drive::getPose, // Functional interface to feed supplier
-        DriveConstants.kDriveKinematics,
+    // Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
+    SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
+        drive::getPose, // Pose2d supplier
+        drive::resetOdometry, // Pose2d consumer, used to reset odometry at the beginning of auto
+        Constants.DriveConstants.kDriveKinematics,//drive::kinematics, // SwerveDriveKinematics
+        new PIDConstants(5.0, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
+        new PIDConstants(0.5, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
+        drive::setModuleStates, // Module states consumer used to output to the drive subsystem
+        eventMap,
+        true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+        drive // The drive subsystem. Used to properly set the requirements of path following commands
+    );
 
-        // Position controllers
-        new PIDController(AutoConstants.kPXController, 0, 0),
-        new PIDController(AutoConstants.kPYController, 0, 0),
-        thetaController,
-        drive::setModuleStates,
-        drive);
+    Command fullAuto = autoBuilder.fullAuto(pathGroup);
 
-    // Reset odometry to the starting pose of the trajectory.
-    drive.resetOdometry(exampleTrajectory.getInitialPose());
+    return fullAuto;
 
-    // Run path following command, then stop at the end.
-    return
-    new InstantCommand(drive::zeroHeading, drive)
-    .andThen(new InstantCommand(drive::flipGyro, drive))
-    .andThen(swerveControllerCommand)
-    .andThen(() -> drive.drive(0, 0, 0, false, false))
-    .andThen();
-    */
   }
 }
