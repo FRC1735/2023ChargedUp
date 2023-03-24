@@ -8,8 +8,11 @@ package frc.robot;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.AutoExperimentCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.PIDGo;
+import frc.robot.commands.TurnPID;
 import frc.robot.commands.arm.ArmHumanPlayerStationCommand;
 import frc.robot.commands.arm.ArmPickupAboveCommand;
 import frc.robot.commands.arm.ArmPickupFrontCommand;
@@ -51,6 +54,7 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -389,7 +393,27 @@ public class RobotContainer {
   Command autonomousDoNothingCommand = new WaitCommand(1);
 
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    //return autoChooser.getSelected();
+
+
+
+    return new SequentialCommandGroup(new PIDGo(drive), new TurnPID(drive));
+    // new TurnPID(drive);
+    //new AutoExperimentCommand(drive);
+    /* 
+    InstantCommand( () -> {   
+      drive.zeroHeading();
+      drive.resetOdometry(new Pose2d(new Translation2d(0, 0), new Rotation2d(0))); 
+    }
+  , drive    ).andThen(
+    
+    new RunCommand(() -> drive.drive(0.2, 0, 0.2, true, true), drive).withTimeout(1.8)
+  );
+*/
+
+
+
+
     /*
     // Create config for trajectory
     TrajectoryConfig config = new TrajectoryConfig(

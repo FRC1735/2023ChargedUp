@@ -57,7 +57,7 @@ public class DriveSubsystem extends SubsystemBase {
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;  
 
   // Odometry class for tracking robot pose
-  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
+  public SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
       DriveConstants.kDriveKinematics,
       Rotation2d.fromDegrees(m_gyro.getAngle()),
       new SwerveModulePosition[] {
@@ -79,6 +79,9 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
 
+    
+    SmartDashboard.putNumber("x", m_odometry.getPoseMeters().getX());
+    SmartDashboard.putNumber("y", m_odometry.getPoseMeters().getY());
     SmartDashboard.putNumber("GYRO", m_gyro.getAngle());
 
     // Update the odometry in the periodic block
