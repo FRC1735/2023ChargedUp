@@ -17,19 +17,28 @@ public class AutoDrive extends CommandBase {
   private DriveSubsystem driveSubsystem;
   
   // driving
-  private PIDController drivePID;
-  private double driveDistanceMeters;
+  private PIDController xPID;
+  private PIDController yPID;
+  //private double driveDistanceMeters;
 
   // turning
   private PIDController turnPID;
   private double targetRotation;
 
-  public AutoDrive(DriveSubsystem drive, double driveDistanceFeet, double targetRotation) {
+  // uhhhh
+  private double xTarget;
+  private double yTarget;
+
+  public AutoDrive(DriveSubsystem drive, double xTarget /*double driveDistanceFeet*/, double yTarget, double targetRotation) {
     addRequirements(drive);
     this.driveSubsystem = drive;
 
-    this.drivePID = new PIDController(0.1, 0, 0);
-    this.driveDistanceMeters = Units.feetToMeters(driveDistanceFeet);
+    this.xPID = new PIDController(0.1, 0, 0);
+    //this.driveDistanceMeters = Units.feetToMeters(driveDistanceFeet);
+    this.xTarget = xTarget;
+
+    this.yPID = new PIDController(0.1, 0, 0);
+    this.yTarget = yTarget;
     
     this.turnPID = new PIDController(0.001, 0, 0);
     this.targetRotation = targetRotation;
@@ -44,18 +53,30 @@ public class AutoDrive extends CommandBase {
 
   @Override
   public void execute() {
+
+    double xPosition = driveSubsystem.m_odometry.getPoseMeters().getX();
     // lol, just noticed we didn't actually use the output in PIDGo and instead always used 0.1
     // TODO - use this x value once we verify we can go slow
-    double x = drivePID.calculate(driveSubsystem.m_odometry.getPoseMeters().getX(), driveDistanceMeters);
+    double x = xPID.calculate(xPosition, xTarget);
     
     double xSpeed = 0;
-    if (!drivePID.atSetpoint()) {
-      xSpeed = 0.1;
+    if (!xPID.atSetpoint()) {
+      xSpeed = -x;//0.1;
     }
 
-    double rot = turnPID.calculate(driveSubsystem.getHeading(), targetRotation);
+    double y = yPID.calculate(driveSubsystem.m_odometry.getPoseMeters().getY(), yTarget);
+    double ySpeed = 0;
+    if (!yPID.atSetpoint() && xPosition < -0.7) {
+      ySpeed = -y;
+    }
 
-    driveSubsystem.drive(xSpeed, 0, rot, true, true);
+    double rot = 0;
+    //if (driveSubsystem.m_odometry.getPoseMeters().getX() > (driveDistanceMeters / 2) )
+    //{
+    rot = turnPID.calculate(driveSubsystem.m_gyro.getAngle(), targetRotation);
+    //}
+
+    driveSubsystem.drive(xSpeed, ySpeed, -rot, true, true);
   }
 
   @Override
@@ -63,6 +84,12 @@ public class AutoDrive extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return drivePID.atSetpoint() && turnPID.atSetpoint();
+    boolean xFinished = xPID.atSetpoint();
+    boolean yFinished = yPID.atSetpoint();
+    boolean turnFinished = turnPID.atSetpoint();
+
+    System.out.println("x: " + xFinished + ", y:" + yFinished + ", turn: " + turnFinished);
+
+    return xFinished && yFinished && turnFinished;
   }
 }

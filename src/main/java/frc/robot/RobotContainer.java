@@ -52,6 +52,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -210,6 +211,8 @@ public class RobotContainer {
       // Apply speed modifier, that is slow down when left bumper held
       driveController.leftBumper().onTrue(new InstantCommand( () -> driveSpeedModifier = SPEED_MODIFIER)).onFalse(new InstantCommand(() -> driveSpeedModifier = FULL_SPEED));
   
+    driveController.a().onTrue(new InstantCommand(() -> { drive.resetOdometry(new Pose2d(new Translation2d(0, 0), new Rotation2d(0))); }));
+
           // Storage
 
     /*driveController.a().onTrue(new SequentialCommandGroup(
@@ -295,6 +298,7 @@ public class RobotContainer {
     operatorController.rightTrigger().onTrue(new InstantCommand(claw::cone, claw));
     //operatorController.rightTrigger().onTrue(new InstantCommand(claw::cone, claw));
 
+  
 
 
     // TODO - cube
@@ -396,8 +400,9 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     //return autoChooser.getSelected();
 
+    // -0.857 
 
-    return new AutoDrive(drive, -4.5, 11);
+    return new AutoDrive(drive, -0.79, 0, /*-2.427 *//*Units.metersToFeet(-4.5)*//* 180 + 169 */ 11);
 
     //return new SequentialCommandGroup(new PIDGo(drive), new TurnPID(drive));
     // new TurnPID(drive);

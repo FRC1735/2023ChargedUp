@@ -45,7 +45,7 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kBackRightChassisAngularOffset);
 
   // The gyro sensor
-  private final AHRS m_gyro = new AHRS(SerialPort.Port.kMXP);
+  public final AHRS m_gyro = new AHRS(SerialPort.Port.kMXP);
 
   // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
