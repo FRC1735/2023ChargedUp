@@ -8,6 +8,7 @@ package frc.robot;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.AutoDrive;
 import frc.robot.commands.AutoExperimentCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
@@ -396,8 +397,9 @@ public class RobotContainer {
     //return autoChooser.getSelected();
 
 
+    return new AutoDrive(drive, -4.5, 11);
 
-    return new SequentialCommandGroup(new PIDGo(drive), new TurnPID(drive));
+    //return new SequentialCommandGroup(new PIDGo(drive), new TurnPID(drive));
     // new TurnPID(drive);
     //new AutoExperimentCommand(drive);
     /* 

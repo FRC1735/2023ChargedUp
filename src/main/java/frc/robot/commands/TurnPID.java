@@ -12,6 +12,8 @@ import frc.robot.subsystems.DriveSubsystem;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class TurnPID extends PIDCommand {
+
+  public TurnPID(DriveSubsystem drive) {
   /** Creates a new TurnPID. */
     super(
         // The controller that the command will use
