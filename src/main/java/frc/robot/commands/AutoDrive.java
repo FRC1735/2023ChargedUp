@@ -40,13 +40,14 @@ public class AutoDrive extends CommandBase {
     // reset odometry and gyro?
     driveSubsystem.zeroHeading();
     driveSubsystem.resetOdometry(new Pose2d(new Translation2d(0, 0), new Rotation2d(0))); 
+    driveSubsystem.resetDisplacement();
   }
 
   @Override
   public void execute() {
     // lol, just noticed we didn't actually use the output in PIDGo and instead always used 0.1
     // TODO - use this x value once we verify we can go slow
-    double x = drivePID.calculate(driveSubsystem.m_odometry.getPoseMeters().getX(), driveDistanceMeters);
+    double x = drivePID.calculate(driveSubsystem.getGyroX(), driveDistanceMeters);
     
     double xSpeed = 0;
     if (!drivePID.atSetpoint()) {
@@ -55,7 +56,7 @@ public class AutoDrive extends CommandBase {
 
     double rot = turnPID.calculate(driveSubsystem.getHeading(), targetRotation);
 
-    driveSubsystem.drive(xSpeed, 0, rot, true, true);
+    driveSubsystem.drive(xSpeed, 0, -rot, true, true);
   }
 
   @Override

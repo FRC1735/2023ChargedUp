@@ -19,14 +19,14 @@ public class PIDGo extends PIDCommand {
   public PIDGo(DriveSubsystem drive) {
     super(
         // The controller that the command will use
-        new PIDController(0.1, 0, 0),
+        new PIDController(0.2, 0, 0),
         // This should return the measurement
         () -> drive.m_odometry.getPoseMeters().getX(),
         // This should return the setpoint (can also be a constant)
-        () -> -4.5,
+        () -> -5.2,
         // This uses the output
         output -> {
-          drive.drive(0.1, 0, 0, true, true);
+          drive.drive(-output, 0, 0, true, true);
         });
     // Use addRequirements() here to declare subsystem dependencies.
 

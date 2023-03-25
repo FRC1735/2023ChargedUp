@@ -36,6 +36,7 @@ import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Shoulder;
 import frc.robot.subsystems.Wrist;
 
+import java.sql.DriverAction;
 import java.util.List;
 
 import com.revrobotics.ColorSensorV3;
@@ -104,6 +105,9 @@ public class RobotContainer {
     configureOperatorController();
 
     //new InstantCommand(claw::cone, claw);
+
+    SmartDashboard.putNumber("turn p", 0);
+    SmartDashboard.putNumber("turn d", 0);
 
     autoChooser.setDefaultOption("Do Nothing", autonomousDoNothingCommand);
     autoChooser.addOption("Score High, Back Up", autonomousDropConeAtHighThenMoveBack);
@@ -211,6 +215,13 @@ public class RobotContainer {
       driveController.leftBumper().onTrue(new InstantCommand( () -> driveSpeedModifier = SPEED_MODIFIER)).onFalse(new InstantCommand(() -> driveSpeedModifier = FULL_SPEED));
   
           // Storage
+
+
+      driveController.a().onTrue(new InstantCommand(
+        () -> {
+          drive.resetDisplacement();
+        }
+      ));
 
     /*driveController.a().onTrue(new SequentialCommandGroup(
       new InstantCommand(claw::cone, claw),
@@ -347,6 +358,31 @@ public class RobotContainer {
     )
   );
 
+  public Command autoScoreHighRedux = new SequentialCommandGroup(
+    // close claw
+    new InstantCommand(claw::cone, claw),
+    // storage mode
+    new SequentialCommandGroup(
+      new ArmStorageCommand(arm),
+      new InstantCommand(arm::stop, arm),
+      new WaitCommand(0),
+      new InstantCommand(wrist::storage),
+      new WaitCommand(0),
+      new ShoulderStorageCommand(shoulder)
+    ),
+    // score high
+    new SequentialCommandGroup(
+      new ShoulderScoreHighCommand(shoulder),
+      new WaitCommand(0),
+      new InstantCommand(wrist::scoreHigh),
+      new WaitCommand(0),
+      new ArmScoreHighCommand(arm)
+    ),
+    // release cone
+    new InstantCommand(claw::open, claw),
+    new WaitCommand(1)
+  );
+
   public Command autonomousDropConeAtHighThenMoveBack = new SequentialCommandGroup(
       // close claw
       new InstantCommand(claw::cone, claw),
@@ -397,9 +433,38 @@ public class RobotContainer {
     //return autoChooser.getSelected();
 
 
-    return new AutoDrive(drive, -4.5, 11);
+    //return new AutoDrive(drive, -4.5, 11);
 
-    //return new SequentialCommandGroup(new PIDGo(drive), new TurnPID(drive));
+    return new TurnPID(drive);
+
+    /*
+    return 
+    new SequentialCommandGroup(autoScoreHighRedux,
+                              // move to cone while going into storaget mode
+                              new ParallelCommandGroup(
+                                // storage mode
+                                new SequentialCommandGroup(
+                                  new ArmStorageCommand(arm),
+                                  new InstantCommand(arm::stop, arm)
+                                  ,
+                                  // pickup front
+                                    new ShoulderPickupFrontCommand(shoulder),
+                                    new WaitCommand(0),
+                                    new ArmPickupFrontCommand(arm),
+                                    new WaitCommand(0),
+                                    new InstantCommand(wrist::pickupFront)
+                                  
+                                ),
+                                // move then turn
+                                new SequentialCommandGroup(
+                                  new PIDGo(drive), 
+                                  new ParallelCommandGroup(
+                                    new TurnPID(drive)
+                                  )
+                                )
+                              ));
+                              */
+
     // new TurnPID(drive);
     //new AutoExperimentCommand(drive);
     /* 
