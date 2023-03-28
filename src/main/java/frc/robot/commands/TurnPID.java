@@ -17,7 +17,7 @@ public class TurnPID extends PIDCommand {
   /** Creates a new TurnPID. */
     super(
         // The controller that the command will use
-        new PIDController(0.01, 0, 0.1),
+        new PIDController(0.0065, 0, 0),
         // This should return the measurement
         () -> drive.getHeading(),
         // This should return the setpoint (can also be a constant)
