@@ -29,6 +29,7 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.Shoulder;
 import frc.robot.subsystems.Wrist;
 
@@ -73,6 +74,7 @@ public class RobotContainer {
   protected final Arm arm = new Arm();
   protected final Wrist wrist = new Wrist();
   protected final Claw claw = new Claw();
+  protected final Lighting lighting = new Lighting();
 
   public final Storage storage = new Storage(arm, wrist, shoulder);
   public final ScoreHigh scoreHigh = new ScoreHigh(shoulder, wrist, arm);
@@ -106,6 +108,7 @@ public class RobotContainer {
     autoChooser.addOption("Back Up", autonomousGoBackCommand);
     SmartDashboard.putData(autoChooser);
 
+    lighting.on();
 
     //SmartDashboard.putData(scoreHigh);
 
