@@ -362,6 +362,7 @@ public class RobotContainer {
     // close claw
     new InstantCommand(claw::cone, claw),
     // storage mode
+    /*
     new SequentialCommandGroup(
       new ArmStorageCommand(arm),
       new InstantCommand(arm::stop, arm),
@@ -370,6 +371,7 @@ public class RobotContainer {
       new WaitCommand(0),
       new ShoulderStorageCommand(shoulder)
     ),
+    */
     // score high
     new SequentialCommandGroup(
       new ShoulderScoreHighCommand(shoulder),
@@ -435,18 +437,23 @@ public class RobotContainer {
 
     //return new AutoDrive(drive, -4.5, 11);
 
-    return new TurnPID(drive);
+    //return new TurnPID(drive);
 
-    /*
+
     return 
     new SequentialCommandGroup(autoScoreHighRedux,
-                              // move to cone while going into storaget mode
+                              new InstantCommand(drive::zeroHeading, drive),
+                              new InstantCommand(drive::zeroOdometry, drive),
+                              new InstantCommand(claw::openForAuto, claw),
                               new ParallelCommandGroup(
+                                // move to cone while going into storaget mode
+
                                 // storage mode
                                 new SequentialCommandGroup(
                                   new ArmStorageCommand(arm),
-                                  new InstantCommand(arm::stop, arm)
-                                  ,
+                                  new InstantCommand(arm::stop, arm),
+                                  //new WaitCommand(1),
+
                                   // pickup front
                                     new ShoulderPickupFrontCommand(shoulder),
                                     new WaitCommand(0),
@@ -455,15 +462,34 @@ public class RobotContainer {
                                     new InstantCommand(wrist::pickupFront)
                                   
                                 ),
+                              
                                 // move then turn
-                                new SequentialCommandGroup(
-                                  new PIDGo(drive), 
+                                new SequentialCommandGroup( 
+                                  new PIDGo(drive, -5.2, true), 
                                   new ParallelCommandGroup(
-                                    new TurnPID(drive)
-                                  )
+                                    new TurnPID(drive, 20)
+                                  ),
+                                  new PIDGo(drive, -5.2 - 0.75 /*0.6604*/, false),
+                                  new RunCommand(claw::cone, claw).withTimeout(1)
                                 )
-                              ));
-                              */
+                              ),
+                              new ParallelCommandGroup(
+                                new PIDGo(drive, -5.2 + 0.75 /*0.6604*/, false),
+                                // storage mode
+                                new SequentialCommandGroup(
+                                  new ArmStorageCommand(arm),
+                                  new InstantCommand(arm::stop, arm),
+                                  new WaitCommand(0),
+                                  new InstantCommand(wrist::storage),
+                                  new WaitCommand(0),
+                                  new ShoulderStorageCommand(shoulder)
+                                )
+                              ),
+                              new TurnPID(drive, 180),
+                              new PIDGo(drive, 0, true)
+                            )
+                            ;
+                              
 
     // new TurnPID(drive);
     //new AutoExperimentCommand(drive);

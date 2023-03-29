@@ -13,7 +13,10 @@ import frc.robot.subsystems.DriveSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class TurnPID extends PIDCommand {
 
-  public TurnPID(DriveSubsystem drive) {
+ double targetAngle;
+ private DriveSubsystem drive;
+
+  public TurnPID(DriveSubsystem drive, double targetAngle) {
   /** Creates a new TurnPID. */
     super(
         // The controller that the command will use
@@ -21,7 +24,7 @@ public class TurnPID extends PIDCommand {
         // This should return the measurement
         () -> drive.getHeading(),
         // This should return the setpoint (can also be a constant)
-        () -> 11,
+        () -> targetAngle,
         // This uses the output
         output -> {
           // Use the output here
@@ -33,13 +36,16 @@ public class TurnPID extends PIDCommand {
     addRequirements(drive);
     // Configure additional PID options by calling `getController` here.
 
-    drive.zeroHeading();
+    //drive.zeroHeading();
+
+    this.drive = drive;
+    this.targetAngle = targetAngle;
 
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return getController().atSetpoint();
+    return targetAngle > (drive.getGyroAngle() - 5) && targetAngle < (drive.getGyroAngle() + 5);
   }
 }

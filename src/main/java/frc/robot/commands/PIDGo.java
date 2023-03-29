@@ -16,25 +16,25 @@ import frc.robot.subsystems.DriveSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class PIDGo extends PIDCommand {
   /** Creates a new PIDGo. */
-  public PIDGo(DriveSubsystem drive) {
+  public PIDGo(DriveSubsystem drive, double distance, boolean fieldRelative) {
     super(
         // The controller that the command will use
         new PIDController(0.2, 0, 0),
         // This should return the measurement
         () -> drive.m_odometry.getPoseMeters().getX(),
         // This should return the setpoint (can also be a constant)
-        () -> -5.2,
+        () -> distance,
         // This uses the output
         output -> {
-          drive.drive(-output, 0, 0, true, true);
+          drive.drive(-output, 0, 0, fieldRelative, true);
         });
     // Use addRequirements() here to declare subsystem dependencies.
 
     addRequirements(drive);
     // Configure additional PID options by calling `getController` here.
 
-    drive.zeroHeading();
-    drive.resetOdometry(new Pose2d(new Translation2d(0, 0), new Rotation2d(0))); 
+    //drive.zeroHeading();
+    //drive.resetOdometry(new Pose2d(new Translation2d(0, 0), new Rotation2d(0))); 
   }
 
   // Returns true when the command should end.
