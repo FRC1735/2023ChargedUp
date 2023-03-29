@@ -375,14 +375,12 @@ public class RobotContainer {
     // score high
     new SequentialCommandGroup(
       new ShoulderScoreHighCommand(shoulder),
-      new WaitCommand(0),
       new InstantCommand(wrist::scoreHigh),
-      new WaitCommand(0),
       new ArmScoreHighCommand(arm)
     ),
     // release cone
     new InstantCommand(claw::open, claw),
-    new WaitCommand(1)
+    new WaitCommand(.25)
   );
 
   public Command autonomousDropConeAtHighThenMoveBack = new SequentialCommandGroup(
@@ -467,7 +465,7 @@ public class RobotContainer {
                                 new SequentialCommandGroup( 
                                   new PIDGo(drive, -5.2, true), 
                                   new ParallelCommandGroup(
-                                    new TurnPID(drive, 20)
+                                    new TurnPID(drive, 15)
                                   ),
                                   new PIDGo(drive, -5.2 - 0.75 /*0.6604*/, false),
                                   new RunCommand(claw::cone, claw).withTimeout(1)
