@@ -109,6 +109,7 @@ public class RobotContainer {
     SmartDashboard.putData(autoChooser);
 
     lighting.on();
+    lighting.setColor(255,0,0);
 
     //SmartDashboard.putData(scoreHigh);
 
@@ -208,6 +209,10 @@ public class RobotContainer {
       // Apply speed modifier, that is slow down when left bumper held
       driveController.leftBumper().onTrue(new InstantCommand( () -> driveSpeedModifier = SPEED_MODIFIER)).onFalse(new InstantCommand(() -> driveSpeedModifier = FULL_SPEED));
   
+
+      // test LED
+      driveController.a().onTrue(new InstantCommand(lighting::green, lighting));
+
           // Storage
 
     /*driveController.a().onTrue(new SequentialCommandGroup(

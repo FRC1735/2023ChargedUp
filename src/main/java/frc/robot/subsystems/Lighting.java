@@ -13,25 +13,25 @@ public class Lighting extends SubsystemBase {
   private AddressableLED ledLeft;
   private AddressableLEDBuffer bufferLeft;
 
-  private AddressableLED ledRight;
-  private AddressableLEDBuffer bufferRight;
+  //private AddressableLED ledRight;
+  //private AddressableLEDBuffer bufferRight;
 
-  private int LED_COUNT = 60;
+  private int LED_COUNT = 30; // 60
 
   /** Creates a new Lighting. */
   public Lighting() {
     ledLeft = new AddressableLED(0);
-    ledRight = new AddressableLED(1);
+    //ledRight = new AddressableLED(1);
     
     bufferLeft = new AddressableLEDBuffer(LED_COUNT);
-    bufferRight = new AddressableLEDBuffer(LED_COUNT);
+    //bufferRight = new AddressableLEDBuffer(LED_COUNT);
     ledLeft.setLength(bufferLeft.getLength());
-    ledRight.setLength(bufferRight.getLength());
+    //ledRight.setLength(bufferRight.getLength());
 
     ledLeft.setData(bufferLeft);
-    ledRight.setData(bufferRight);
+    //ledRight.setData(bufferRight);
     ledLeft.start();
-    ledRight.start();
+    //ledRight.start();
 
     setColor(0, 255, 0);
   }
@@ -48,23 +48,28 @@ public class Lighting extends SubsystemBase {
 
   public void on() {
     setColor(0, 255, 0);
-    ledLeft.stop();
-    ledRight.stop();
+    //ledLeft.start();
+    //ledRight.start();
   }
 
   public void off() {
     setColor(0, 0, 0);
     ledLeft.stop();
-    ledRight.stop();
+    //ledRight.stop();
+  }
+
+  public void green() {
+    System.out.println("JTA - GREEN");
+    setColor(0, 255, 0);
   }
 
   public void setColor(int r, int g, int b) {
 
     for (int i = 0; i < bufferLeft.getLength(); i++) {
       bufferLeft.setRGB(i, r, g, b);
-      bufferRight.setRGB(i, r, g, b);
+      //bufferRight.setRGB(i, r, g, b);
     }
     ledLeft.setData(bufferLeft);
-    ledRight.setData(bufferRight);
+    //ledRight.setData(bufferRight);
   }
 }
