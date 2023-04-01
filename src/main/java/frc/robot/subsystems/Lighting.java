@@ -40,7 +40,7 @@ public class Lighting extends SubsystemBase {
   public void periodic() {
     double matchTime = DriverStation.getMatchTime();
 
-    if (!DriverStation.isAutonomous() && (matchTime < 10) && (matchTime > 7.9)) {
+    if (!DriverStation.isAutonomous() && (matchTime < 30)) {
       setColor(255, 0, 0);
     }
     // This method will be called once per scheduler run
@@ -60,6 +60,18 @@ public class Lighting extends SubsystemBase {
 
   public void green() {
     setColor(0, 255, 0);
+  }
+
+  public void red() {
+    setColor(255, 0, 0);
+  }
+
+  public void purple() {
+    setColor(128 , 0, 128);
+  }
+
+  public void yellow() {
+    setColor(255,255,0);
   }
 
   public void setColor(int r, int g, int b) {

@@ -210,10 +210,13 @@ public class RobotContainer {
       driveController.leftBumper().onTrue(new InstantCommand( () -> driveSpeedModifier = SPEED_MODIFIER)).onFalse(new InstantCommand(() -> driveSpeedModifier = FULL_SPEED));
   
 
-      // test LED
-      driveController.a().onTrue(new InstantCommand(lighting::green, lighting));
-
-          // Storage
+      // LEDs
+      driveController.x().onTrue(new InstantCommand(lighting::green, lighting));
+      driveController.a().onTrue(new InstantCommand(lighting::yellow, lighting));
+      driveController.b().onTrue(new InstantCommand(lighting::purple, lighting));
+          
+      
+      // Storage
 
     /*driveController.a().onTrue(new SequentialCommandGroup(
       new InstantCommand(claw::cone, claw),
