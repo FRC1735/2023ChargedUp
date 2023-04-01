@@ -16,6 +16,10 @@ public class Lighting extends SubsystemBase {
   private AddressableLED ledRight;
   private AddressableLEDBuffer bufferRight;
 
+  int selectedR = 0;
+  int selectedG = 0;
+  int selectedB = 0;
+
   private int LED_COUNT = 21; // 60
 
   /** Creates a new Lighting. */
@@ -36,12 +40,29 @@ public class Lighting extends SubsystemBase {
     setColor(0, 255, 0);
   }
 
+  double lastMatchTime = 30;
+  boolean flashed = false;
+
   @Override
   public void periodic() {
     double matchTime = DriverStation.getMatchTime();
 
-    if (!DriverStation.isAutonomous() && (matchTime < 30)) {
-      setColor(255, 0, 0);
+    if (!DriverStation.isAutonomous() && (matchTime < 30 && matchTime != -1) && DriverStation.isEnabled()) {
+      System.out.println(lastMatchTime - matchTime);
+      if (lastMatchTime - matchTime > .5) {
+        System.out.println(flashed);
+        flashed = !flashed;
+        lastMatchTime = matchTime;
+      }
+      //System.out.println(matchTime + ", " + matchTime % 5 );
+      //System.out.println(selectedR + ", " + selectedG + ", " + selectedB);
+      if (flashed) {
+        //System.out.println("red");
+        setColor(255, 0, 0);
+      } else {
+        setColor(selectedR, selectedG, selectedB);
+      }
+      //lastMatchTime = matchTime;
     }
     // This method will be called once per scheduler run
   }
@@ -75,6 +96,11 @@ public class Lighting extends SubsystemBase {
   }
 
   public void setColor(int r, int g, int b) {
+    if (!(r == 255 && g == 0 && b == 0)) {
+      selectedR = r;
+      selectedB = b;
+      selectedG = g;
+    }
 
     for (int i = 0; i < bufferRight.getLength(); i++) {
       //bufferLeft.setRGB(i, r, g, b);
