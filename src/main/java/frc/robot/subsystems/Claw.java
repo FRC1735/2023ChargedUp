@@ -32,6 +32,8 @@ public class Claw extends SubsystemBase {
 
     absoluteEncoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
     absoluteEncoder.setInverted(true);
+
+    absoluteEncoder.setZeroOffset(0.3);
   
     pidController = motor.getPIDController();
     pidController.setFeedbackDevice(absoluteEncoder);
@@ -64,19 +66,19 @@ public class Claw extends SubsystemBase {
   }
 
   public void open() {
-    pidController.setReference(0.80, ControlType.kPosition);
+    pidController.setReference(0.65, ControlType.kPosition);
   }
 
   public void openForAuto() {
-    pidController.setReference(0.69, ControlType.kPosition);
+    pidController.setReference(0.61, ControlType.kPosition);
   }
 
   public void cone() {
-    pidController.setReference(0.53, ControlType.kPosition);
+    pidController.setReference(0.41, ControlType.kPosition);
   }
 
   public void cube() {
-    pidController.setReference(0.56, ControlType.kPosition);
+    pidController.setReference(0.26, ControlType.kPosition);
   }
 
   public void setToZero() {

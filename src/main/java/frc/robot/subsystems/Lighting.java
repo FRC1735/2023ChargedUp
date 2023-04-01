@@ -20,7 +20,7 @@ public class Lighting extends SubsystemBase {
   int selectedG = 0;
   int selectedB = 0;
 
-  private int LED_COUNT = 21; // 60
+  private int LED_COUNT = 44; // 60
 
   /** Creates a new Lighting. */
   public Lighting() {
@@ -48,22 +48,20 @@ public class Lighting extends SubsystemBase {
     double matchTime = DriverStation.getMatchTime();
 
     if (!DriverStation.isAutonomous() && (matchTime < 30 && matchTime != -1) && DriverStation.isEnabled()) {
-      System.out.println(lastMatchTime - matchTime);
       if (lastMatchTime - matchTime > .5) {
-        System.out.println(flashed);
         flashed = !flashed;
         lastMatchTime = matchTime;
       }
-      //System.out.println(matchTime + ", " + matchTime % 5 );
-      //System.out.println(selectedR + ", " + selectedG + ", " + selectedB);
-      if (flashed) {
+     if (flashed) {
         //System.out.println("red");
         setColor(255, 0, 0);
       } else {
         setColor(selectedR, selectedG, selectedB);
       }
       //lastMatchTime = matchTime;
-    }
+    }/*  else if (matchTime == -1 && !DriverStation.isEnabled()) {
+      green();
+    }*/
     // This method will be called once per scheduler run
   }
 
