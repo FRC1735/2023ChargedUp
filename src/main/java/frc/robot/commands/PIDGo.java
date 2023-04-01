@@ -46,6 +46,6 @@ public class PIDGo extends PIDCommand {
   @Override
   public boolean isFinished() {
     double d = drive.m_odometry.getPoseMeters().getX();
-    return d > (distance - 0.05) && d < (distance + 0.05);
+    return d > (distance - 0.1) && d < (distance + 0.1);
   }
 }

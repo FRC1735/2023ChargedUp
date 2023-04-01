@@ -115,7 +115,8 @@ public class RobotContainer {
     autoChooser.addOption("Score High, Back Up", autonomousDropConeAtHighThenMoveBack);
     autoChooser.addOption("Score High", autonomousDropConeAtHigh);
     autoChooser.addOption("Back Up", autonomousGoBackCommand);
-    autoChooser.addOption("New Auto", autoNewWIPCommand);
+    autoChooser.addOption("New Auto Right", autoNewWIPCommand);
+    autoChooser.addOption("New Auto Left", autoNewWIPCommandLeft);
     SmartDashboard.putData(autoChooser);
 
     lighting.on();
@@ -465,11 +466,11 @@ public class RobotContainer {
   
     // move then turn
     new SequentialCommandGroup( 
-      new PIDGo(drive, -5.2, true), 
+      new PIDGo(drive, -4.9, true), 
       new ParallelCommandGroup(
         new TurnPID(drive, 15)
       ),
-      new PIDGo(drive, -5.2 - 0.75 /*0.6604*/, false),
+      new PIDGo(drive, -4.9 - 0.6 /*0.6604*/, false),
       new RunCommand(claw::cone, claw).withTimeout(1)
     )
   ),
@@ -484,11 +485,75 @@ public class RobotContainer {
       new WaitCommand(0),
       new ShoulderStorageCommand(shoulder)
     )
+  )
+);
+
+Command autoNewWIPCommandLeft = new SequentialCommandGroup( new SequentialCommandGroup(
+  // close claw
+  new InstantCommand(claw::cone, claw),
+  // storage mode
+  /*
+  new SequentialCommandGroup(
+    new ArmStorageCommand(arm),
+    new InstantCommand(arm::stop, arm),
+    new WaitCommand(0),
+    new InstantCommand(wrist::storage),
+    new WaitCommand(0),
+    new ShoulderStorageCommand(shoulder)
   ),
-  new TurnPID(drive, 180),
-  new PIDGo(drive, 0, true)
-)
-;
+  */
+  // score high
+  new SequentialCommandGroup(
+    new ShoulderScoreHighCommand(shoulder),
+    new InstantCommand(wrist::scoreHigh),
+    new ArmScoreHighCommand(arm)
+  )),
+  // release cone
+  new InstantCommand(claw::open, claw),
+  new WaitCommand(.25),
+new InstantCommand(drive::zeroHeading, drive),
+new InstantCommand(drive::zeroOdometry, drive),
+new InstantCommand(claw::openForAuto, claw),
+new ParallelCommandGroup(
+  // move to cone while going into storaget mode
+
+  // storage mode
+  new SequentialCommandGroup(
+    new ArmStorageCommand(arm),
+    new InstantCommand(arm::stop, arm),
+    //new WaitCommand(1),
+
+    // pickup front
+      new ShoulderPickupFrontCommand(shoulder),
+      new WaitCommand(0),
+      new ArmPickupFrontCommand(arm),
+      new WaitCommand(0),
+      new InstantCommand(wrist::pickupFront)
+    
+  ),
+
+  // move then turn
+  new SequentialCommandGroup( 
+    new PIDGo(drive, -4.9, true), 
+    new ParallelCommandGroup(
+      new TurnPID(drive, 345)
+    ),
+    new PIDGo(drive, -4.9 - 0.9 /*0.6604*/, false),
+    new RunCommand(claw::cone, claw).withTimeout(1)
+  )
+),
+new ParallelCommandGroup(
+  new PIDGo(drive, -5.2 + 0.75 /*0.6604*/, false),
+  // storage mode
+  new SequentialCommandGroup(
+    new ArmStorageCommand(arm),
+    new InstantCommand(arm::stop, arm),
+    new WaitCommand(0),
+    new InstantCommand(wrist::storage),
+    new WaitCommand(0),
+    new ShoulderStorageCommand(shoulder)
+  )
+));
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
