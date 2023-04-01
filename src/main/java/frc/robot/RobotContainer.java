@@ -33,7 +33,6 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.Shoulder;
 import frc.robot.subsystems.Wrist;
 
@@ -80,7 +79,6 @@ public class RobotContainer {
   protected final Arm arm = new Arm();
   protected final Wrist wrist = new Wrist();
   protected final Claw claw = new Claw();
-  protected final Lighting lighting = new Lighting();
 
   public final Storage storage = new Storage(arm, wrist, shoulder);
   public final ScoreHigh scoreHigh = new ScoreHigh(shoulder, wrist, arm);
@@ -108,18 +106,17 @@ public class RobotContainer {
 
     //new InstantCommand(claw::cone, claw);
 
-    SmartDashboard.putNumber("turn p", 0);
-    SmartDashboard.putNumber("turn d", 0);
+    //SmartDashboard.putNumber("turn p", 0);
+    //SmartDashboard.putNumber("turn d", 0);
 
     autoChooser.setDefaultOption("Do Nothing", autonomousDoNothingCommand);
     autoChooser.addOption("Score High, Back Up", autonomousDropConeAtHighThenMoveBack);
     autoChooser.addOption("Score High", autonomousDropConeAtHigh);
     autoChooser.addOption("Back Up", autonomousGoBackCommand);
-    autoChooser.addOption("New Auto", autoNewWIPCommand);
+    autoChooser.addOption("Score Then Right", autonomousScoreThenPickupRight);
+    autoChooser.addOption("Score Then Left", autonomousScoreThenPickupLeft);
     SmartDashboard.putData(autoChooser);
 
-    lighting.on();
-    lighting.setColor(255,0,0);
 
     //SmartDashboard.putData(scoreHigh);
 
@@ -219,14 +216,7 @@ public class RobotContainer {
       // Apply speed modifier, that is slow down when left bumper held
       driveController.leftBumper().onTrue(new InstantCommand( () -> driveSpeedModifier = SPEED_MODIFIER)).onFalse(new InstantCommand(() -> driveSpeedModifier = FULL_SPEED));
   
-
-      // LEDs
-      driveController.x().onTrue(new InstantCommand(lighting::green, lighting));
-      driveController.a().onTrue(new InstantCommand(lighting::yellow, lighting));
-      driveController.b().onTrue(new InstantCommand(lighting::purple, lighting));
-          
-      
-      // Storage
+          // Storage
 
 
       driveController.a().onTrue(new InstantCommand(
@@ -441,7 +431,7 @@ public class RobotContainer {
 
   Command autonomousDoNothingCommand = new WaitCommand(1);
 
-  Command autoNewWIPCommand = new SequentialCommandGroup(autoScoreHighRedux,
+  Command autonomousScoreThenPickupRight = new SequentialCommandGroup(autoScoreHighRedux,
   new InstantCommand(drive::zeroHeading, drive),
   new InstantCommand(drive::zeroOdometry, drive),
   new InstantCommand(claw::openForAuto, claw),
@@ -465,16 +455,16 @@ public class RobotContainer {
   
     // move then turn
     new SequentialCommandGroup( 
-      new PIDGo(drive, -5.2, true), 
+      new PIDGo(drive, -5.0, true), 
       new ParallelCommandGroup(
         new TurnPID(drive, 15)
       ),
-      new PIDGo(drive, -5.2 - 0.75 /*0.6604*/, false),
+      new PIDGo(drive, -5.0 - 0.75 /*0.6604*/, false),
       new RunCommand(claw::cone, claw).withTimeout(1)
     )
-  ),
+  )/*,
   new ParallelCommandGroup(
-    new PIDGo(drive, -5.2 + 0.75 /*0.6604*/, false),
+    new PIDGo(drive, -5.2 + 0.75, false),
     // storage mode
     new SequentialCommandGroup(
       new ArmStorageCommand(arm),
@@ -487,8 +477,59 @@ public class RobotContainer {
   ),
   new TurnPID(drive, 180),
   new PIDGo(drive, 0, true)
-)
-;
+  */
+  );
+
+  
+  Command autonomousScoreThenPickupLeft = new SequentialCommandGroup(autoScoreHighRedux,
+  new InstantCommand(drive::zeroHeading, drive),
+  new InstantCommand(drive::zeroOdometry, drive),
+  new InstantCommand(claw::openForAuto, claw),
+  new ParallelCommandGroup(
+    // move to cone while going into storaget mode
+
+    // storage mode
+    new SequentialCommandGroup(
+      new ArmStorageCommand(arm),
+      new InstantCommand(arm::stop, arm),
+      //new WaitCommand(1),
+
+      // pickup front
+        new ShoulderPickupFrontCommand(shoulder),
+        new WaitCommand(0),
+        new ArmPickupFrontCommand(arm),
+        new WaitCommand(0),
+        new InstantCommand(wrist::pickupFront)
+      
+    ),
+  
+    // move then turn
+    new SequentialCommandGroup( 
+      new PIDGo(drive, -5.0, true), 
+      new ParallelCommandGroup(
+        new TurnPID(drive, 345)
+      ),
+      // not sure about "+0.75" was minus
+      new PIDGo(drive, -5.0 + 0.75 /*0.6604*/, false),
+      new RunCommand(claw::cone, claw).withTimeout(1)
+    )
+  )/*,
+  new ParallelCommandGroup(
+    new PIDGo(drive, -5.2 + 0.75, false),
+    // storage mode
+    new SequentialCommandGroup(
+      new ArmStorageCommand(arm),
+      new InstantCommand(arm::stop, arm),
+      new WaitCommand(0),
+      new InstantCommand(wrist::storage),
+      new WaitCommand(0),
+      new ShoulderStorageCommand(shoulder)
+    )
+  ),
+  new TurnPID(drive, 180),
+  new PIDGo(drive, 0, true)
+  */
+  );
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
