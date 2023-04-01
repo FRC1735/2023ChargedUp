@@ -466,11 +466,11 @@ public class RobotContainer {
   
     // move then turn
     new SequentialCommandGroup( 
-      new PIDGo(drive, -4.9, true), 
+      new PIDGo(drive, -5.2, true), 
       new ParallelCommandGroup(
         new TurnPID(drive, 15)
       ),
-      new PIDGo(drive, -4.9 - 0.6 /*0.6604*/, false),
+      new PIDGo(drive, -5.2 - 0.6 /*0.6604*/, false),
       new RunCommand(claw::cone, claw).withTimeout(1)
     )
   ),
@@ -534,11 +534,11 @@ new ParallelCommandGroup(
 
   // move then turn
   new SequentialCommandGroup( 
-    new PIDGo(drive, -4.9, true), 
+    new PIDGo(drive, -5.2, true), 
     new ParallelCommandGroup(
       new TurnPID(drive, 345)
     ),
-    new PIDGo(drive, -4.9 - 0.9 /*0.6604*/, false),
+    new PIDGo(drive, -5.2 - 0.6 /*0.6604*/, false),
     new RunCommand(claw::cone, claw).withTimeout(1)
   )
 ),
