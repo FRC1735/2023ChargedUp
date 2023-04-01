@@ -113,6 +113,7 @@ public class RobotContainer {
     autoChooser.addOption("Score High, Back Up", autonomousDropConeAtHighThenMoveBack);
     autoChooser.addOption("Score High", autonomousDropConeAtHigh);
     autoChooser.addOption("Back Up", autonomousGoBackCommand);
+    autoChooser.addOption("New Auto", autoNewWIPCommand);
     SmartDashboard.putData(autoChooser);
 
 
@@ -429,8 +430,57 @@ public class RobotContainer {
 
   Command autonomousDoNothingCommand = new WaitCommand(1);
 
+  Command autoNewWIPCommand = new SequentialCommandGroup(autoScoreHighRedux,
+  new InstantCommand(drive::zeroHeading, drive),
+  new InstantCommand(drive::zeroOdometry, drive),
+  new InstantCommand(claw::openForAuto, claw),
+  new ParallelCommandGroup(
+    // move to cone while going into storaget mode
+
+    // storage mode
+    new SequentialCommandGroup(
+      new ArmStorageCommand(arm),
+      new InstantCommand(arm::stop, arm),
+      //new WaitCommand(1),
+
+      // pickup front
+        new ShoulderPickupFrontCommand(shoulder),
+        new WaitCommand(0),
+        new ArmPickupFrontCommand(arm),
+        new WaitCommand(0),
+        new InstantCommand(wrist::pickupFront)
+      
+    ),
+  
+    // move then turn
+    new SequentialCommandGroup( 
+      new PIDGo(drive, -5.2, true), 
+      new ParallelCommandGroup(
+        new TurnPID(drive, 15)
+      ),
+      new PIDGo(drive, -5.2 - 0.75 /*0.6604*/, false),
+      new RunCommand(claw::cone, claw).withTimeout(1)
+    )
+  ),
+  new ParallelCommandGroup(
+    new PIDGo(drive, -5.2 + 0.75 /*0.6604*/, false),
+    // storage mode
+    new SequentialCommandGroup(
+      new ArmStorageCommand(arm),
+      new InstantCommand(arm::stop, arm),
+      new WaitCommand(0),
+      new InstantCommand(wrist::storage),
+      new WaitCommand(0),
+      new ShoulderStorageCommand(shoulder)
+    )
+  ),
+  new TurnPID(drive, 180),
+  new PIDGo(drive, 0, true)
+)
+;
+
   public Command getAutonomousCommand() {
-    //return autoChooser.getSelected();
+    return autoChooser.getSelected();
 
 
     //return new AutoDrive(drive, -4.5, 11);
@@ -438,55 +488,8 @@ public class RobotContainer {
     //return new TurnPID(drive);
 
 
-    return 
-    new SequentialCommandGroup(autoScoreHighRedux,
-                              new InstantCommand(drive::zeroHeading, drive),
-                              new InstantCommand(drive::zeroOdometry, drive),
-                              new InstantCommand(claw::openForAuto, claw),
-                              new ParallelCommandGroup(
-                                // move to cone while going into storaget mode
-
-                                // storage mode
-                                new SequentialCommandGroup(
-                                  new ArmStorageCommand(arm),
-                                  new InstantCommand(arm::stop, arm),
-                                  //new WaitCommand(1),
-
-                                  // pickup front
-                                    new ShoulderPickupFrontCommand(shoulder),
-                                    new WaitCommand(0),
-                                    new ArmPickupFrontCommand(arm),
-                                    new WaitCommand(0),
-                                    new InstantCommand(wrist::pickupFront)
-                                  
-                                ),
-                              
-                                // move then turn
-                                new SequentialCommandGroup( 
-                                  new PIDGo(drive, -5.2, true), 
-                                  new ParallelCommandGroup(
-                                    new TurnPID(drive, 15)
-                                  ),
-                                  new PIDGo(drive, -5.2 - 0.75 /*0.6604*/, false),
-                                  new RunCommand(claw::cone, claw).withTimeout(1)
-                                )
-                              ),
-                              new ParallelCommandGroup(
-                                new PIDGo(drive, -5.2 + 0.75 /*0.6604*/, false),
-                                // storage mode
-                                new SequentialCommandGroup(
-                                  new ArmStorageCommand(arm),
-                                  new InstantCommand(arm::stop, arm),
-                                  new WaitCommand(0),
-                                  new InstantCommand(wrist::storage),
-                                  new WaitCommand(0),
-                                  new ShoulderStorageCommand(shoulder)
-                                )
-                              ),
-                              new TurnPID(drive, 180),
-                              new PIDGo(drive, 0, true)
-                            )
-                            ;
+    //return 
+    
                               
 
     // new TurnPID(drive);
