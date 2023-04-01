@@ -33,6 +33,7 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.Shoulder;
 import frc.robot.subsystems.Wrist;
 
@@ -79,6 +80,7 @@ public class RobotContainer {
   protected final Arm arm = new Arm();
   protected final Wrist wrist = new Wrist();
   protected final Claw claw = new Claw();
+  protected final Lighting lighting = new Lighting();
 
   public final Storage storage = new Storage(arm, wrist, shoulder);
   public final ScoreHigh scoreHigh = new ScoreHigh(shoulder, wrist, arm);
@@ -116,6 +118,8 @@ public class RobotContainer {
     autoChooser.addOption("New Auto", autoNewWIPCommand);
     SmartDashboard.putData(autoChooser);
 
+    lighting.on();
+    lighting.setColor(255,0,0);
 
     //SmartDashboard.putData(scoreHigh);
 
@@ -215,7 +219,14 @@ public class RobotContainer {
       // Apply speed modifier, that is slow down when left bumper held
       driveController.leftBumper().onTrue(new InstantCommand( () -> driveSpeedModifier = SPEED_MODIFIER)).onFalse(new InstantCommand(() -> driveSpeedModifier = FULL_SPEED));
   
-          // Storage
+
+      // LEDs
+      driveController.x().onTrue(new InstantCommand(lighting::green, lighting));
+      driveController.a().onTrue(new InstantCommand(lighting::yellow, lighting));
+      driveController.b().onTrue(new InstantCommand(lighting::purple, lighting));
+          
+      
+      // Storage
 
 
       driveController.a().onTrue(new InstantCommand(
