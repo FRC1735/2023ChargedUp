@@ -10,28 +10,28 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Lighting extends SubsystemBase {
-  private AddressableLED ledLeft;
-  private AddressableLEDBuffer bufferLeft;
+  //private AddressableLED ledLeft;
+  //private AddressableLEDBuffer bufferLeft;
 
-  //private AddressableLED ledRight;
-  //private AddressableLEDBuffer bufferRight;
+  private AddressableLED ledRight;
+  private AddressableLEDBuffer bufferRight;
 
-  private int LED_COUNT = 30; // 60
+  private int LED_COUNT = 21; // 60
 
   /** Creates a new Lighting. */
   public Lighting() {
-    ledLeft = new AddressableLED(0);
-    //ledRight = new AddressableLED(1);
+    //ledLeft = new AddressableLED(0);
+    ledRight = new AddressableLED(0);
     
-    bufferLeft = new AddressableLEDBuffer(LED_COUNT);
-    //bufferRight = new AddressableLEDBuffer(LED_COUNT);
-    ledLeft.setLength(bufferLeft.getLength());
-    //ledRight.setLength(bufferRight.getLength());
+    //bufferLeft = new AddressableLEDBuffer(LED_COUNT);
+    bufferRight = new AddressableLEDBuffer(LED_COUNT);
+    //ledLeft.setLength(bufferLeft.getLength());
+    ledRight.setLength(bufferRight.getLength());
 
-    ledLeft.setData(bufferLeft);
-    //ledRight.setData(bufferRight);
-    ledLeft.start();
-    //ledRight.start();
+    //ledLeft.setData(bufferLeft);
+    ledRight.setData(bufferRight);
+    //ledLeft.start();
+    ledRight.start();
 
     setColor(0, 255, 0);
   }
@@ -54,22 +54,21 @@ public class Lighting extends SubsystemBase {
 
   public void off() {
     setColor(0, 0, 0);
-    ledLeft.stop();
-    //ledRight.stop();
+    //ledLeft.stop();
+    ledRight.stop();
   }
 
   public void green() {
-    System.out.println("JTA - GREEN");
     setColor(0, 255, 0);
   }
 
   public void setColor(int r, int g, int b) {
 
-    for (int i = 0; i < bufferLeft.getLength(); i++) {
-      bufferLeft.setRGB(i, r, g, b);
-      //bufferRight.setRGB(i, r, g, b);
+    for (int i = 0; i < bufferRight.getLength(); i++) {
+      //bufferLeft.setRGB(i, r, g, b);
+      bufferRight.setRGB(i, r, g, b);
     }
-    ledLeft.setData(bufferLeft);
-    //ledRight.setData(bufferRight);
+    //ledLeft.setData(bufferLeft);
+    ledRight.setData(bufferRight);
   }
 }
