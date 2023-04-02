@@ -319,12 +319,12 @@ public class RobotContainer {
 
     // Open Claw
     operatorController.rightBumper().onTrue(new InstantCommand(claw::open, claw));
-    //operatorController.rightBumper().onTrue(new InstantCommand(claw::manualOpen, claw));
+    //operatorController.rightBumper().onTrue(new InstantCommand(claw::manualOpen, claw)).onFalse(new InstantCommand(claw::stop, claw));
 
 
     // Cone Claw
     operatorController.rightTrigger().onTrue(new InstantCommand(claw::cone, claw));
-    //operatorController.rightTrigger().onTrue(new InstantCommand(claw::cone, claw));
+    //operatorController.rightTrigger().onTrue(new InstantCommand(claw::manualClose, claw)).onFalse(new InstantCommand(claw::stop, claw));
 
 
 
