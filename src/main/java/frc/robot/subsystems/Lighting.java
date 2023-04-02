@@ -77,6 +77,10 @@ public class Lighting extends SubsystemBase {
     ledRight.stop();
   }
 
+  public void blank() {
+    setColor(0, 0, 0);
+  }
+
   public void green() {
     setColor(0, 255, 0);
   }

@@ -6,8 +6,8 @@ package frc.robot.commands.combos;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.arm.ArmScoreHighCommand;
-import frc.robot.commands.shoulder.ShoulderScoreHighCommand;
+import frc.robot.commands.arm.ArmPickupFrontCommand;
+import frc.robot.commands.shoulder.ShoulderPickupFrontCommand;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Shoulder;
 import frc.robot.subsystems.Wrist;
@@ -15,13 +15,15 @@ import frc.robot.subsystems.Wrist;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ScoreHigh extends SequentialCommandGroup {
-  /** Creates a new ScoreHigh. */
-  public ScoreHigh(Shoulder shoulder, Wrist wrist, Arm arm, boolean isAuto) {
+public class PickupFront extends SequentialCommandGroup {
+  /** Creates a new PickupFront. */
+  public PickupFront(Shoulder shoulder, Arm arm, Wrist wrist) {
+    // Add your commands in the addCommands() call, e.g.
+    // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new ShoulderScoreHighCommand(shoulder),
-      new InstantCommand(wrist::scoreHigh),
-      new ArmScoreHighCommand(arm, isAuto)
+      new ShoulderPickupFrontCommand(shoulder),
+      new ArmPickupFrontCommand(arm),
+      new InstantCommand(wrist::pickupFront)
     );
   }
 }

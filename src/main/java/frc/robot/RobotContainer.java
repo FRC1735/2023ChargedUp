@@ -20,7 +20,11 @@ import frc.robot.commands.arm.ArmPickupFrontCommand;
 import frc.robot.commands.arm.ArmScoreHighCommand;
 import frc.robot.commands.arm.ArmScoreMidCommand;
 import frc.robot.commands.arm.ArmStorageCommand;
+import frc.robot.commands.combos.CancelAllCommand;
+import frc.robot.commands.combos.HumanPlayerStation;
+import frc.robot.commands.combos.PickupFront;
 import frc.robot.commands.combos.ScoreHigh;
+import frc.robot.commands.combos.ScoreMid;
 import frc.robot.commands.combos.Storage;
 import frc.robot.commands.shoulder.ShoulderHumanPlayerStationCommand;
 import frc.robot.commands.shoulder.ShoulderPickupAboveCommand;
@@ -83,7 +87,21 @@ public class RobotContainer {
   protected final Lighting lighting = new Lighting();
 
   public final Storage storage = new Storage(arm, wrist, shoulder);
-  public final ScoreHigh scoreHigh = new ScoreHigh(shoulder, wrist, arm);
+  public final ScoreHigh scoreHigh = new ScoreHigh(shoulder, wrist, arm, false);
+  public final PickupFront pickupFront = new PickupFront(shoulder, arm, wrist);
+  public final ScoreMid scoreMid = new ScoreMid(shoulder, wrist, arm);
+  public final HumanPlayerStation humanPlayerStation = new HumanPlayerStation(shoulder, arm, wrist);
+  public final CancelAllCommand cancelAllCommand = new CancelAllCommand(scoreHigh, storage, pickupFront, scoreMid, humanPlayerStation);
+
+  /* 
+  public final Command cancelAllCommand = new InstantCommand(() -> {
+    scoreHigh.cancel();
+    storage.cancel();
+    pickupFront.cancel();
+    scoreMid.cancel();
+    humanPlayerStation.cancel();
+  });
+  */
 
   private final CommandXboxController driveController =
       new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -222,6 +240,7 @@ public class RobotContainer {
   
 
       // LEDs
+      driveController.y().onTrue(new InstantCommand(lighting::blank, lighting));
       driveController.x().onTrue(new InstantCommand(lighting::green, lighting));
       driveController.a().onTrue(new InstantCommand(lighting::yellow, lighting));
       driveController.b().onTrue(new InstantCommand(lighting::purple, lighting));
@@ -253,22 +272,10 @@ public class RobotContainer {
     operatorController.a().onTrue(storage);
 
     // Score Mid
-    operatorController.b().onTrue(new SequentialCommandGroup(
-      new ShoulderScoreMidCommand(shoulder),
-      new WaitCommand(0),
-      new InstantCommand(wrist::scoreMid),
-      new WaitCommand(0),
-      new ArmScoreMidCommand(arm)
-    ));
+    operatorController.b().onTrue(scoreMid);
 
     // Pickup Front
-    operatorController.x().onTrue(new SequentialCommandGroup(
-      new ShoulderPickupFrontCommand(shoulder),
-      new WaitCommand(0),
-      new ArmPickupFrontCommand(arm),
-      new WaitCommand(0),
-      new InstantCommand(wrist::pickupFront)
-    ));
+    operatorController.x().onTrue(pickupFront);
 
     // Score High
     operatorController.y().onTrue(scoreHigh);
@@ -283,13 +290,7 @@ public class RobotContainer {
     ));
 
     // Pickup Human Player Station
-    operatorController.back().onTrue(new SequentialCommandGroup(
-      new ShoulderHumanPlayerStationCommand(shoulder),
-      new WaitCommand(0),
-      new ArmHumanPlayerStationCommand(arm),
-      new WaitCommand(0),
-      new InstantCommand(wrist::humanPlayerStation)
-    ));
+    operatorController.back().onTrue(humanPlayerStation);
 
     // Extend Arm
     // TODO: Verify that limit is working on this
@@ -298,8 +299,14 @@ public class RobotContainer {
     // Retract Arm
     operatorController.povDown().onTrue(new InstantCommand(arm::in, arm)).onFalse(new InstantCommand(arm::stop, arm));
 
-    // Cancel storage command
-    operatorController.povRight().onTrue(new InstantCommand(() -> scoreHigh.cancel()));
+    // Cancel score high command
+    operatorController.povRight().onTrue(new InstantCommand(() -> {
+      scoreHigh.cancel();
+      storage.cancel();
+      pickupFront.cancel();
+      scoreMid.cancel();
+      humanPlayerStation.cancel();
+    }));
 
     // Move shoulder up and down
     // TODO: When this is on it interferes with PID control
@@ -355,7 +362,7 @@ public class RobotContainer {
       new WaitCommand(0),
       new InstantCommand(wrist::scoreHigh),
       new WaitCommand(0),
-      new ArmScoreHighCommand(arm)
+      new ArmScoreHighCommand(arm, true)
     ),
     // release cone
     new InstantCommand(claw::open, claw),
@@ -389,7 +396,7 @@ public class RobotContainer {
     new SequentialCommandGroup(
       new ShoulderScoreHighCommand(shoulder),
       new InstantCommand(wrist::scoreHigh),
-      new ArmScoreHighCommand(arm)
+      new ArmScoreHighCommand(arm, true)
     ),
     // release cone
     new InstantCommand(claw::open, claw),
@@ -414,7 +421,7 @@ public class RobotContainer {
         new WaitCommand(0),
         new InstantCommand(wrist::scoreHigh),
         new WaitCommand(0),
-        new ArmScoreHighCommand(arm)
+        new ArmScoreHighCommand(arm, true)
       ),
       // release cone
       new InstantCommand(claw::open, claw),
@@ -506,7 +513,7 @@ Command autoNewWIPCommandLeft = new SequentialCommandGroup( new SequentialComman
   new SequentialCommandGroup(
     new ShoulderScoreHighCommand(shoulder),
     new InstantCommand(wrist::scoreHigh),
-    new ArmScoreHighCommand(arm)
+    new ArmScoreHighCommand(arm, true)
   )),
   // release cone
   new InstantCommand(claw::open, claw),
