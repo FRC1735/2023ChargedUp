@@ -32,6 +32,7 @@ public class Arm extends SubsystemBase {
   double SETPOINT_SCORE_MID = 0.95;
   double SETPOINT_PICKUP_FRONT = 0.86;
   double SETPOINT_SCORE_HIGH = 0.19;
+  double SETPOINT_SCORE_HIGH_AUTO = 0.08;
   double SETPOINT_PICKUP_ABOVE = 0.49;
   double SETPOINT_HUMAN_PLAYER_STATION = 0.96;
 
@@ -101,8 +102,16 @@ public class Arm extends SubsystemBase {
     pidController.setReference(SETPOINT_SCORE_HIGH, CANSparkMax.ControlType.kPosition);
   }
 
+  public void scoreHighAuto() {
+    pidController.setReference(SETPOINT_SCORE_HIGH_AUTO, CANSparkMax.ControlType.kPosition);
+  }
+
   public boolean isAtScoreHigh() {
     return Utils.isCloseEnough(absoluteEncoder.getPosition(), SETPOINT_SCORE_HIGH);
+  }
+
+  public boolean isAtScoreHighAuto() {
+    return Utils.isCloseEnough(absoluteEncoder.getPosition(), SETPOINT_SCORE_HIGH_AUTO);
   }
 
   public void pickupAbove() {

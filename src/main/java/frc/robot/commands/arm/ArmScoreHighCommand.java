@@ -7,14 +7,20 @@ public class ArmScoreHighCommand extends CommandBase {
   Arm arm;
   int reachedSetpoint = 0;
   int SETPOINT_LIMIT = 5;
-
-  public ArmScoreHighCommand(Arm arm) {
+  boolean isAuto = false;
+  public ArmScoreHighCommand(Arm arm, boolean isAuto) {
     this.arm = arm;
+    this.isAuto = isAuto;
   }
 
   @Override
   public void initialize() {
-    arm.scoreHigh();
+    if (isAuto) {
+      arm.scoreHighAuto();
+    }
+    else {
+      arm.scoreHigh();
+    }
   }
 
   @Override

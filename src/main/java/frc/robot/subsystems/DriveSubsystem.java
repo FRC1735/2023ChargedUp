@@ -8,6 +8,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -45,7 +46,7 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kBackRightChassisAngularOffset);
 
   // The gyro sensor
-  private final AHRS m_gyro = new AHRS(SerialPort.Port.kMXP);
+  public final AHRS m_gyro = new AHRS(SerialPort.Port.kMXP);
 
   // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
@@ -57,7 +58,7 @@ public class DriveSubsystem extends SubsystemBase {
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;  
 
   // Odometry class for tracking robot pose
-  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
+  public SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
       DriveConstants.kDriveKinematics,
       Rotation2d.fromDegrees(m_gyro.getAngle()),
       new SwerveModulePosition[] {
@@ -76,9 +77,24 @@ public class DriveSubsystem extends SubsystemBase {
     m_gyro.setAngleAdjustment(180);
   }
 
+  public void resetDisplacement() {
+    m_gyro.resetDisplacement();
+  }
+
+  public float getGyroX() {
+    return m_gyro.getDisplacementX();
+  }
+
   @Override
   public void periodic() {
 
+    
+    SmartDashboard.putNumber("gyro x", m_gyro.getDisplacementX());
+    SmartDashboard.putNumber("gyro y", m_gyro.getDisplacementY());
+
+
+    SmartDashboard.putNumber("x", m_odometry.getPoseMeters().getX());
+    SmartDashboard.putNumber("y", m_odometry.getPoseMeters().getY());
     SmartDashboard.putNumber("GYRO", m_gyro.getAngle());
 
     // Update the odometry in the periodic block
@@ -98,6 +114,10 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public Pose2d getPose() {
     return m_odometry.getPoseMeters();
+  }
+
+  public void zeroOdometry() {
+    resetOdometry(new Pose2d(new Translation2d(0, 0), new Rotation2d(0))); 
   }
 
   /**
@@ -236,6 +256,10 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public double getHeading() {
     return Rotation2d.fromDegrees(m_gyro.getAngle()).getDegrees();
+  }
+
+  public double getGyroAngle() {
+    return m_gyro.getAngle();
   }
 
   /**
