@@ -10,6 +10,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AutoDrive;
 import frc.robot.commands.AutoExperimentCommand;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.PIDGo;
@@ -26,6 +27,7 @@ import frc.robot.commands.combos.PickupFront;
 import frc.robot.commands.combos.ScoreHigh;
 import frc.robot.commands.combos.ScoreMid;
 import frc.robot.commands.combos.Storage;
+import frc.robot.subsystems.BallShooter;
 import frc.robot.commands.shoulder.ShoulderHumanPlayerStationCommand;
 import frc.robot.commands.shoulder.ShoulderPickupAboveCommand;
 import frc.robot.commands.shoulder.ShoulderPickupFrontCommand;
@@ -80,6 +82,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem drive = new DriveSubsystem();
+  private final BallShooter ballShooter = new BallShooter();
   protected final Shoulder shoulder = new Shoulder();
   protected final Arm arm = new Arm();
   protected final Wrist wrist = new Wrist();
@@ -242,10 +245,15 @@ public class RobotContainer {
       // LEDs
       driveController.y().onTrue(new InstantCommand(lighting::blank, lighting));
       driveController.x().onTrue(new InstantCommand(lighting::green, lighting));
-      driveController.a().onTrue(new InstantCommand(lighting::yellow, lighting));
+      // Off for baseball cannon
+      //driveController.a().onTrue(new InstantCommand(lighting::yellow, lighting));
       driveController.b().onTrue(new InstantCommand(lighting::purple, lighting));
           
-      
+      // Baseball cannon
+     
+      driveController.a().onTrue(new InstantCommand(ballShooter::on, ballShooter)).onFalse(new InstantCommand(ballShooter::off, ballShooter));
+
+
       // Storage
 
 
