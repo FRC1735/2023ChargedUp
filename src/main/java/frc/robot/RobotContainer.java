@@ -244,24 +244,41 @@ public class RobotContainer {
 
       // LEDs
       driveController.y().onTrue(new InstantCommand(lighting::blank, lighting));
-      driveController.x().onTrue(new InstantCommand(lighting::green, lighting));
+      //driveController.x().onTrue(new InstantCommand(lighting::green, lighting));
       // Off for baseball cannon
       //driveController.a().onTrue(new InstantCommand(lighting::yellow, lighting));
-      driveController.b().onTrue(new InstantCommand(lighting::purple, lighting));
+      //driveController.b().onTrue(new InstantCommand(lighting::purple, lighting));
           
       // Baseball cannon
      
+      // aim the cannon
+      driveController.b().onTrue(
+        new SequentialCommandGroup(
+          new InstantCommand(claw::cone, claw),
+          new ShoulderScoreMidCommand(shoulder),
+          new InstantCommand(wrist::scoreMid)
+        )
+      );
+      // fire!
       driveController.a().onTrue(new InstantCommand(ballShooter::on, ballShooter)).onFalse(new InstantCommand(ballShooter::off, ballShooter));
-
+      // storage mode
+      driveController.x().onTrue(
+        new SequentialCommandGroup(
+          new InstantCommand(claw::cone, claw),
+          new InstantCommand(wrist::storage),
+          new ShoulderStorageCommand(shoulder)
+        )
+      );
 
       // Storage
 
 
+      /* 
       driveController.a().onTrue(new InstantCommand(
         () -> {
           drive.resetDisplacement();
         }
-      ));
+      ));*/
 
     /*driveController.a().onTrue(new SequentialCommandGroup(
       new InstantCommand(claw::cone, claw),

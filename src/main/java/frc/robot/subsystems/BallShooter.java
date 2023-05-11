@@ -14,7 +14,7 @@ public class BallShooter extends SubsystemBase {
 
   /** Creates a new BallShooter. */
   public BallShooter() {
-    solenoid = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
+    solenoid = new Solenoid(PneumaticsModuleType.REVPH, 0);
   }
 
   @Override
@@ -23,10 +23,12 @@ public class BallShooter extends SubsystemBase {
   }
 
   public void on() {
+    System.out.println("JTA - ON");
     solenoid.set(true);
   }
 
   public void off() {
+    System.out.println("JTA - OFF");
     solenoid.set(false);
   }
 }
