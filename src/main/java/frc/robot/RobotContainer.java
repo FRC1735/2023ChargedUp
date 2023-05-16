@@ -254,7 +254,7 @@ public class RobotContainer {
       // aim the cannon
       driveController.b().onTrue(
         new SequentialCommandGroup(
-          new InstantCommand(claw::cone, claw),
+          new InstantCommand(claw::open, claw),
           new ShoulderScoreMidCommand(shoulder),
           new InstantCommand(wrist::scoreMid)
         )
@@ -264,7 +264,7 @@ public class RobotContainer {
       // storage mode
       driveController.x().onTrue(
         new SequentialCommandGroup(
-          new InstantCommand(claw::cone, claw),
+          new InstantCommand(claw::open, claw),
           new InstantCommand(wrist::storage),
           new ShoulderStorageCommand(shoulder)
         )
