@@ -41,7 +41,7 @@ public class Shoulder extends SubsystemBase {
     leftMotor.setIdleMode(IdleMode.kBrake);
     absoluteEncoder = leftMotor.getAbsoluteEncoder(Type.kDutyCycle);
     absoluteEncoder.setInverted(false);
-    absoluteEncoder.setZeroOffset(.6);
+    absoluteEncoder.setZeroOffset(.57);
     pidController = leftMotor.getPIDController();
     pidController.setFeedbackDevice(absoluteEncoder);
 

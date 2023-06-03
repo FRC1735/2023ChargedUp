@@ -281,6 +281,7 @@ public class RobotContainer {
     operatorController.y().onTrue(scoreHigh);
 
     // Pickup Above
+    /* 
     operatorController.start().onTrue(new SequentialCommandGroup(
       new ShoulderPickupAboveCommand(shoulder),
       new WaitCommand(2),
@@ -288,6 +289,7 @@ public class RobotContainer {
       new WaitCommand(2),
       new InstantCommand(wrist::pickupAbove)
     ));
+    */
 
     // Pickup Human Player Station
     operatorController.back().onTrue(humanPlayerStation);
